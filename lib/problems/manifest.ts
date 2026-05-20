@@ -542,6 +542,102 @@ export const problems: Problem[] = [
     ]
   },
   {
+    "type": "coding",
+    "meta": {
+      "id": "007-maximum-subarray",
+      "title": "Maximum Subarray",
+      "difficulty": "medium",
+      "tags": [
+        "array",
+        "dynamic-programming",
+        "divide-and-conquer"
+      ],
+      "topics": [
+        "dynamic-programming",
+        "arrays"
+      ],
+      "entry": "maxSubArray",
+      "signature": {
+        "params": [
+          {
+            "array": "int"
+          }
+        ],
+        "returns": "int"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Maximum Subarray\n\nGiven an integer array `nums`, find the subarray with the largest sum and return that sum. A subarray is a contiguous non-empty portion of the array.\n\n## Example\n\nInput: `nums = [-2,1,-3,4,-1,2,1,-5,4]` → Output: `6`\nExplanation: The subarray `[4,-1,2,1]` has the largest sum of 6.\n\nInput: `nums = [1]` → Output: `1`\n\nInput: `nums = [5,4,-1,7,8]` → Output: `23`\n\n## Constraints\n- 1 ≤ nums.length ≤ 10⁵\n- -10⁴ ≤ nums[i] ≤ 10⁴\n",
+    "starters": {
+      "python": "def maxSubArray(nums):\n    # Return the sum of the contiguous subarray with the largest sum.\n    pass\n",
+      "javascript": "function maxSubArray(nums) {\n  // Return the sum of the contiguous subarray with the largest sum.\n}\n"
+    },
+    "solutions": {
+      "python": "def maxSubArray(nums):\n    best = cur = nums[0]\n    for v in nums[1:]:\n        cur = max(v, cur + v); best = max(best, cur)\n    return best\n",
+      "javascript": "function maxSubArray(nums) {\n  let best = nums[0], cur = nums[0];\n  for (let i = 1; i < nums.length; i++) { cur = Math.max(nums[i], cur + nums[i]); best = Math.max(best, cur); }\n  return best;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          [
+            -2,
+            1,
+            -3,
+            4,
+            -1,
+            2,
+            1,
+            -5,
+            4
+          ]
+        ],
+        "expected": 6
+      },
+      {
+        "input": [
+          [
+            1
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "input": [
+          [
+            5,
+            4,
+            -1,
+            7,
+            8
+          ]
+        ],
+        "expected": 23
+      },
+      {
+        "input": [
+          [
+            -1,
+            -2,
+            -3
+          ]
+        ],
+        "expected": -1
+      },
+      {
+        "input": [
+          [
+            -2,
+            1
+          ]
+        ],
+        "expected": 1
+      }
+    ]
+  },
+  {
     "type": "system_design",
     "meta": {
       "id": "001-design-url-shortener",
