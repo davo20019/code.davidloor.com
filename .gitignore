@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+.env*.local
+.wrangler
+playwright-report
+test-results
+.DS_Store
+runner/dist
+runner/pyodide-assets
+runner/package
+runner/pyodide-*.tgz
