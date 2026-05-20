@@ -706,6 +706,110 @@ export const problems: Problem[] = [
     ]
   },
   {
+    "type": "coding",
+    "meta": {
+      "id": "009-binary-search",
+      "title": "Binary Search",
+      "difficulty": "easy",
+      "tags": [
+        "array",
+        "binary-search"
+      ],
+      "topics": [
+        "binary-search",
+        "arrays"
+      ],
+      "entry": "search",
+      "signature": {
+        "params": [
+          {
+            "array": "int"
+          },
+          "int"
+        ],
+        "returns": "int"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Binary Search\n\nGiven a sorted array of integers `nums` in ascending order and a `target` integer, write a function to search for `target` in `nums`. If `target` exists, return its index; otherwise, return `-1`. Your algorithm must run in O(log n) time.\n\n## Example\n\nInput: `nums = [-1,0,3,5,9,12]`, `target = 9` → Output: `4`\nExplanation: 9 exists in `nums` and its index is 4.\n\nInput: `nums = [-1,0,3,5,9,12]`, `target = 2` → Output: `-1`\nExplanation: 2 does not exist in `nums`.\n\n## Constraints\n- 1 ≤ nums.length ≤ 10⁴\n- -10⁴ ≤ nums[i], target ≤ 10⁴\n- All integers in `nums` are unique.\n- `nums` is sorted in ascending order.\n",
+    "starters": {
+      "python": "def search(nums, target):\n    # Return the index of target in nums, or -1 if not found.\n    pass\n",
+      "javascript": "function search(nums, target) {\n  // Return the index of target in nums, or -1 if not found.\n}\n"
+    },
+    "solutions": {
+      "python": "def search(nums, target):\n    lo, hi = 0, len(nums) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if nums[mid] == target: return mid\n        if nums[mid] < target: lo = mid + 1\n        else: hi = mid - 1\n    return -1\n",
+      "javascript": "function search(nums, target) {\n  let lo = 0, hi = nums.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >> 1;\n    if (nums[mid] === target) return mid;\n    if (nums[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n  return -1;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          [
+            -1,
+            0,
+            3,
+            5,
+            9,
+            12
+          ],
+          9
+        ],
+        "expected": 4
+      },
+      {
+        "input": [
+          [
+            -1,
+            0,
+            3,
+            5,
+            9,
+            12
+          ],
+          2
+        ],
+        "expected": -1
+      },
+      {
+        "input": [
+          [
+            1
+          ],
+          1
+        ],
+        "expected": 0
+      },
+      {
+        "input": [
+          [
+            1,
+            3,
+            5,
+            7,
+            9
+          ],
+          7
+        ],
+        "expected": 3
+      },
+      {
+        "input": [
+          [
+            2,
+            5,
+            8,
+            12,
+            16
+          ],
+          100
+        ],
+        "expected": -1
+      }
+    ]
+  },
+  {
     "type": "system_design",
     "meta": {
       "id": "001-design-url-shortener",

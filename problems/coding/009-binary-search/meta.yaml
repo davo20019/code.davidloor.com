@@ -1,0 +1,12 @@
+title: Binary Search
+difficulty: easy
+tags: [array, binary-search]
+topics: [binary-search, arrays]
+entry: search
+signature:
+  params:
+    - { array: int }
+    - int
+  returns: int
+validator: { kind: exact }
+timeLimitMs: 5000
