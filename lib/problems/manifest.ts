@@ -1047,6 +1047,900 @@ export const problems: Problem[] = [
     ]
   },
   {
+    "type": "coding",
+    "meta": {
+      "id": "012-group-anagrams",
+      "title": "Group Anagrams",
+      "difficulty": "medium",
+      "tags": [
+        "hash-map",
+        "string",
+        "sorting"
+      ],
+      "topics": [
+        "hash-maps"
+      ],
+      "entry": "groupAnagrams",
+      "signature": {
+        "params": [
+          {
+            "array": "string"
+          }
+        ],
+        "returns": {
+          "array": {
+            "array": "string"
+          }
+        }
+      },
+      "validator": {
+        "kind": "set_of_sets"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Group Anagrams\n\nGiven an array of strings, group all strings that are anagrams of each other together.\n\nTwo strings are anagrams if they contain the same characters in the same frequencies (regardless of order). Return a list of groups; the order of the groups and the order of strings within each group does not matter.\n\n## Example\n\nInput: `strs = [\"eat\",\"tea\",\"tan\",\"ate\",\"nat\",\"bat\"]`\nOutput: `[[\"eat\",\"tea\",\"ate\"],[\"tan\",\"nat\"],[\"bat\"]]`\n\n## Constraints\n- 1 <= strs.length <= 10^4\n- 0 <= strs[i].length <= 100\n- strs[i] consists of lowercase English letters\n",
+    "starters": {
+      "python": "def groupAnagrams(strs):\n    # Group strings that are anagrams of each other.\n    pass\n",
+      "javascript": "function groupAnagrams(strs) {\n  // Group strings that are anagrams of each other.\n}\n"
+    },
+    "solutions": {
+      "python": "def groupAnagrams(strs):\n    g = {}\n    for s in strs:\n        k = \"\".join(sorted(s))\n        g.setdefault(k, []).append(s)\n    return list(g.values())\n",
+      "javascript": "function groupAnagrams(strs) {\n  const g = new Map();\n  for (const s of strs) {\n    const k = [...s].sort().join('');\n    if (!g.has(k)) g.set(k, []);\n    g.get(k).push(s);\n  }\n  return [...g.values()];\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          [
+            "eat",
+            "tea",
+            "tan",
+            "ate",
+            "nat",
+            "bat"
+          ]
+        ],
+        "expected": [
+          [
+            "eat",
+            "tea",
+            "ate"
+          ],
+          [
+            "tan",
+            "nat"
+          ],
+          [
+            "bat"
+          ]
+        ]
+      },
+      {
+        "input": [
+          [
+            ""
+          ]
+        ],
+        "expected": [
+          [
+            ""
+          ]
+        ]
+      },
+      {
+        "input": [
+          [
+            "a"
+          ]
+        ],
+        "expected": [
+          [
+            "a"
+          ]
+        ]
+      },
+      {
+        "input": [
+          [
+            "cab",
+            "abc",
+            "bca",
+            "xyz",
+            "zyx"
+          ]
+        ],
+        "expected": [
+          [
+            "cab",
+            "abc",
+            "bca"
+          ],
+          [
+            "xyz",
+            "zyx"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "type": "coding",
+    "meta": {
+      "id": "013-container-most-water",
+      "title": "Container With Most Water",
+      "difficulty": "medium",
+      "tags": [
+        "two-pointers",
+        "array"
+      ],
+      "topics": [
+        "two-pointers"
+      ],
+      "entry": "maxArea",
+      "signature": {
+        "params": [
+          {
+            "array": "int"
+          }
+        ],
+        "returns": "int"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Container With Most Water\n\nYou are given an integer array `height` of length `n`. There are `n` vertical lines drawn such that the two endpoints of the i-th line are `(i, 0)` and `(i, height[i])`.\n\nFind two lines that together with the x-axis form a container that holds the most water. Return the maximum amount of water the container can store.\n\nYou may not slant the container.\n\n## Example\n\nInput: `height = [1,8,6,2,5,4,8,3,7]`\nOutput: `49`\nExplanation: The lines at indices 1 and 8 (heights 8 and 7) form a container with width 7 and minimum height 7, giving area 49.\n\n## Constraints\n- n == height.length\n- 2 <= n <= 10^5\n- 0 <= height[i] <= 10^4\n",
+    "starters": {
+      "python": "def maxArea(h):\n    # Return the maximum water the container can hold.\n    pass\n",
+      "javascript": "function maxArea(h) {\n  // Return the maximum water the container can hold.\n}\n"
+    },
+    "solutions": {
+      "python": "def maxArea(h):\n    i, j, best = 0, len(h) - 1, 0\n    while i < j:\n        best = max(best, (j - i) * min(h[i], h[j]))\n        if h[i] < h[j]: i += 1\n        else: j -= 1\n    return best\n",
+      "javascript": "function maxArea(h) {\n  let i = 0, j = h.length - 1, best = 0;\n  while (i < j) { best = Math.max(best, (j - i) * Math.min(h[i], h[j])); if (h[i] < h[j]) i++; else j--; }\n  return best;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          [
+            1,
+            8,
+            6,
+            2,
+            5,
+            4,
+            8,
+            3,
+            7
+          ]
+        ],
+        "expected": 49
+      },
+      {
+        "input": [
+          [
+            1,
+            1
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "input": [
+          [
+            4,
+            3,
+            2,
+            1,
+            4
+          ]
+        ],
+        "expected": 16
+      },
+      {
+        "input": [
+          [
+            1,
+            2,
+            1
+          ]
+        ],
+        "expected": 2
+      }
+    ]
+  },
+  {
+    "type": "coding",
+    "meta": {
+      "id": "014-three-sum",
+      "title": "3Sum",
+      "difficulty": "medium",
+      "tags": [
+        "two-pointers",
+        "array",
+        "sorting"
+      ],
+      "topics": [
+        "two-pointers"
+      ],
+      "entry": "threeSum",
+      "signature": {
+        "params": [
+          {
+            "array": "int"
+          }
+        ],
+        "returns": {
+          "array": {
+            "array": "int"
+          }
+        }
+      },
+      "validator": {
+        "kind": "set_of_sets"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# 3Sum\n\nGiven an integer array `nums`, return all the triplets `[nums[i], nums[j], nums[k]]` such that `i`, `j`, and `k` are distinct indices and `nums[i] + nums[j] + nums[k] == 0`.\n\nThe solution set must not contain duplicate triplets.\n\n## Example\n\nInput: `nums = [-1, 0, 1, 2, -1, -4]`\nOutput: `[[-1, -1, 2], [-1, 0, 1]]`\n\n## Constraints\n- 3 <= nums.length <= 3000\n- -10^5 <= nums[i] <= 10^5\n",
+    "starters": {
+      "python": "def threeSum(nums):\n    # Return all unique triplets that sum to zero.\n    pass\n",
+      "javascript": "function threeSum(nums) {\n  // Return all unique triplets that sum to zero.\n}\n"
+    },
+    "solutions": {
+      "python": "def threeSum(nums):\n    nums = sorted(nums); res = []\n    n = len(nums)\n    for i in range(n - 2):\n        if i > 0 and nums[i] == nums[i-1]: continue\n        l, r = i + 1, n - 1\n        while l < r:\n            s = nums[i] + nums[l] + nums[r]\n            if s == 0:\n                res.append([nums[i], nums[l], nums[r]])\n                while l < r and nums[l] == nums[l+1]: l += 1\n                while l < r and nums[r] == nums[r-1]: r -= 1\n                l += 1; r -= 1\n            elif s < 0: l += 1\n            else: r -= 1\n    return res\n",
+      "javascript": "function threeSum(nums) {\n  nums = [...nums].sort((a, b) => a - b);\n  const res = []; const n = nums.length;\n  for (let i = 0; i < n - 2; i++) {\n    if (i > 0 && nums[i] === nums[i-1]) continue;\n    let l = i + 1, r = n - 1;\n    while (l < r) {\n      const s = nums[i] + nums[l] + nums[r];\n      if (s === 0) { res.push([nums[i], nums[l], nums[r]]); while (l < r && nums[l] === nums[l+1]) l++; while (l < r && nums[r] === nums[r-1]) r--; l++; r--; }\n      else if (s < 0) l++; else r--;\n    }\n  }\n  return res;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          [
+            -1,
+            0,
+            1,
+            2,
+            -1,
+            -4
+          ]
+        ],
+        "expected": [
+          [
+            -1,
+            -1,
+            2
+          ],
+          [
+            -1,
+            0,
+            1
+          ]
+        ]
+      },
+      {
+        "input": [
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "expected": []
+      },
+      {
+        "input": [
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "expected": [
+          [
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "input": [
+          [
+            -2,
+            0,
+            1,
+            1,
+            2
+          ]
+        ],
+        "expected": [
+          [
+            -2,
+            0,
+            2
+          ],
+          [
+            -2,
+            1,
+            1
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "type": "coding",
+    "meta": {
+      "id": "015-longest-substr-no-repeat",
+      "title": "Longest Substring Without Repeating Characters",
+      "difficulty": "medium",
+      "tags": [
+        "sliding-window",
+        "hash-map",
+        "string"
+      ],
+      "topics": [
+        "sliding-window"
+      ],
+      "entry": "lengthOfLongestSubstring",
+      "signature": {
+        "params": [
+          "string"
+        ],
+        "returns": "int"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Longest Substring Without Repeating Characters\n\nGiven a string `s`, find the length of the longest substring that contains no repeating characters.\n\n## Example\n\nInput: `s = \"abcabcbb\"`\nOutput: `3`\nExplanation: The answer is `\"abc\"`, which has length 3.\n\n## Constraints\n- 0 <= s.length <= 5 * 10^4\n- s consists of English letters, digits, symbols, and spaces\n",
+    "starters": {
+      "python": "def lengthOfLongestSubstring(s):\n    # Return the length of the longest substring without repeating characters.\n    pass\n",
+      "javascript": "function lengthOfLongestSubstring(s) {\n  // Return the length of the longest substring without repeating characters.\n}\n"
+    },
+    "solutions": {
+      "python": "def lengthOfLongestSubstring(s):\n    seen = {}; best = 0; left = 0\n    for i, c in enumerate(s):\n        if c in seen and seen[c] >= left: left = seen[c] + 1\n        seen[c] = i; best = max(best, i - left + 1)\n    return best\n",
+      "javascript": "function lengthOfLongestSubstring(s) {\n  const seen = new Map(); let best = 0, left = 0;\n  for (let i = 0; i < s.length; i++) {\n    const c = s[i];\n    if (seen.has(c) && seen.get(c) >= left) left = seen.get(c) + 1;\n    seen.set(c, i); best = Math.max(best, i - left + 1);\n  }\n  return best;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          "abcabcbb"
+        ],
+        "expected": 3
+      },
+      {
+        "input": [
+          "bbbbb"
+        ],
+        "expected": 1
+      },
+      {
+        "input": [
+          "pwwkew"
+        ],
+        "expected": 3
+      },
+      {
+        "input": [
+          ""
+        ],
+        "expected": 0
+      },
+      {
+        "input": [
+          "abcdef"
+        ],
+        "expected": 6
+      }
+    ]
+  },
+  {
+    "type": "coding",
+    "meta": {
+      "id": "016-search-rotated-sorted",
+      "title": "Search in Rotated Sorted Array",
+      "difficulty": "medium",
+      "tags": [
+        "binary-search",
+        "array"
+      ],
+      "topics": [
+        "binary-search"
+      ],
+      "entry": "search",
+      "signature": {
+        "params": [
+          {
+            "array": "int"
+          },
+          "int"
+        ],
+        "returns": "int"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Search in Rotated Sorted Array\n\nThere is an integer array `nums` sorted in ascending order that has been rotated at some pivot index. Given the rotated array and an integer `target`, return the index of `target` if it is in the array, or `-1` if it is not.\n\nYou must write an algorithm with O(log n) runtime complexity.\n\n## Example\n\nInput: `nums = [4,5,6,7,0,1,2]`, `target = 0`\nOutput: `4`\n\nInput: `nums = [4,5,6,7,0,1,2]`, `target = 3`\nOutput: `-1`\n\n## Constraints\n- 1 <= nums.length <= 5000\n- -10^4 <= nums[i] <= 10^4\n- All values in `nums` are unique\n- -10^4 <= target <= 10^4\n",
+    "starters": {
+      "python": "def search(nums, target):\n    # Return the index of target in the rotated sorted array, or -1 if not found.\n    pass\n",
+      "javascript": "function search(nums, target) {\n  // Return the index of target in the rotated sorted array, or -1 if not found.\n}\n"
+    },
+    "solutions": {
+      "python": "def search(nums, target):\n    lo, hi = 0, len(nums) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if nums[mid] == target: return mid\n        if nums[lo] <= nums[mid]:\n            if nums[lo] <= target < nums[mid]: hi = mid - 1\n            else: lo = mid + 1\n        else:\n            if nums[mid] < target <= nums[hi]: lo = mid + 1\n            else: hi = mid - 1\n    return -1\n",
+      "javascript": "function search(nums, target) {\n  let lo = 0, hi = nums.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >> 1;\n    if (nums[mid] === target) return mid;\n    if (nums[lo] <= nums[mid]) {\n      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1; else lo = mid + 1;\n    } else {\n      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1; else hi = mid - 1;\n    }\n  }\n  return -1;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          [
+            4,
+            5,
+            6,
+            7,
+            0,
+            1,
+            2
+          ],
+          0
+        ],
+        "expected": 4
+      },
+      {
+        "input": [
+          [
+            4,
+            5,
+            6,
+            7,
+            0,
+            1,
+            2
+          ],
+          3
+        ],
+        "expected": -1
+      },
+      {
+        "input": [
+          [
+            1
+          ],
+          0
+        ],
+        "expected": -1
+      },
+      {
+        "input": [
+          [
+            1
+          ],
+          1
+        ],
+        "expected": 0
+      },
+      {
+        "input": [
+          [
+            3,
+            1
+          ],
+          1
+        ],
+        "expected": 1
+      }
+    ]
+  },
+  {
+    "type": "coding",
+    "meta": {
+      "id": "017-trapping-rain-water",
+      "title": "Trapping Rain Water",
+      "difficulty": "hard",
+      "tags": [
+        "two-pointers",
+        "dynamic-programming",
+        "array"
+      ],
+      "topics": [
+        "dynamic-programming"
+      ],
+      "entry": "trap",
+      "signature": {
+        "params": [
+          {
+            "array": "int"
+          }
+        ],
+        "returns": "int"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Trapping Rain Water\n\nGiven an array `height` representing an elevation map where the width of each bar is 1, compute how much water can be trapped after it rains.\n\n## Example\n\nInput: `height = [0,1,0,2,1,0,1,3,2,1,2,1]`\nOutput: `6`\n\n## Constraints\n- n == height.length\n- 1 <= n <= 2 * 10^4\n- 0 <= height[i] <= 10^5\n",
+    "starters": {
+      "python": "def trap(h):\n    # Return the total amount of water that can be trapped.\n    pass\n",
+      "javascript": "function trap(h) {\n  // Return the total amount of water that can be trapped.\n}\n"
+    },
+    "solutions": {
+      "python": "def trap(h):\n    n = len(h); l = [0]*n; r = [0]*n; best = 0\n    for i in range(1, n): l[i] = max(l[i-1], h[i-1])\n    for i in range(n-2, -1, -1): r[i] = max(r[i+1], h[i+1])\n    for i in range(n): best += max(0, min(l[i], r[i]) - h[i])\n    return best\n",
+      "javascript": "function trap(h) {\n  const n = h.length; const l = Array(n).fill(0), r = Array(n).fill(0);\n  for (let i = 1; i < n; i++) l[i] = Math.max(l[i-1], h[i-1]);\n  for (let i = n-2; i >= 0; i--) r[i] = Math.max(r[i+1], h[i+1]);\n  let best = 0;\n  for (let i = 0; i < n; i++) best += Math.max(0, Math.min(l[i], r[i]) - h[i]);\n  return best;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          [
+            0,
+            1,
+            0,
+            2,
+            1,
+            0,
+            1,
+            3,
+            2,
+            1,
+            2,
+            1
+          ]
+        ],
+        "expected": 6
+      },
+      {
+        "input": [
+          [
+            4,
+            2,
+            0,
+            3,
+            2,
+            5
+          ]
+        ],
+        "expected": 9
+      },
+      {
+        "input": [
+          [
+            1,
+            0,
+            1
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "input": [
+          [
+            3,
+            0,
+            2,
+            0,
+            4
+          ]
+        ],
+        "expected": 7
+      }
+    ]
+  },
+  {
+    "type": "coding",
+    "meta": {
+      "id": "018-word-break",
+      "title": "Word Break",
+      "difficulty": "medium",
+      "tags": [
+        "dynamic-programming",
+        "hash-map",
+        "string"
+      ],
+      "topics": [
+        "dynamic-programming"
+      ],
+      "entry": "wordBreak",
+      "signature": {
+        "params": [
+          "string",
+          {
+            "array": "string"
+          }
+        ],
+        "returns": "bool"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Word Break\n\nGiven a string `s` and a dictionary of strings `wordDict`, return `true` if `s` can be segmented into a space-separated sequence of one or more dictionary words.\n\nNote that the same word in the dictionary may be used multiple times.\n\n## Example\n\nInput: `s = \"leetcode\"`, `wordDict = [\"leet\", \"code\"]`\nOutput: `true`\nExplanation: `\"leetcode\"` can be segmented as `\"leet code\"`.\n\nInput: `s = \"applepenapple\"`, `wordDict = [\"apple\", \"pen\"]`\nOutput: `true`\n\n## Constraints\n- 1 <= s.length <= 300\n- 1 <= wordDict.length <= 1000\n- 1 <= wordDict[i].length <= 20\n- s and wordDict[i] consist of only lowercase English letters\n- All words in wordDict are unique\n",
+    "starters": {
+      "python": "def wordBreak(s, words):\n    # Return True if s can be segmented into words from the dictionary.\n    pass\n",
+      "javascript": "function wordBreak(s, words) {\n  // Return true if s can be segmented into words from the dictionary.\n}\n"
+    },
+    "solutions": {
+      "python": "def wordBreak(s, words):\n    words = set(words); n = len(s); dp = [False]*(n+1); dp[0] = True\n    for i in range(1, n+1):\n        for j in range(i):\n            if dp[j] and s[j:i] in words: dp[i] = True; break\n    return dp[n]\n",
+      "javascript": "function wordBreak(s, words) {\n  const dict = new Set(words); const n = s.length; const dp = Array(n+1).fill(false); dp[0] = true;\n  for (let i = 1; i <= n; i++) for (let j = 0; j < i; j++) if (dp[j] && dict.has(s.slice(j, i))) { dp[i] = true; break; }\n  return dp[n];\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          "leetcode",
+          [
+            "leet",
+            "code"
+          ]
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          "applepenapple",
+          [
+            "apple",
+            "pen"
+          ]
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          "catsandog",
+          [
+            "cats",
+            "dog",
+            "sand",
+            "and",
+            "cat"
+          ]
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          "a",
+          [
+            "a"
+          ]
+        ],
+        "expected": true
+      }
+    ]
+  },
+  {
+    "type": "coding",
+    "meta": {
+      "id": "019-course-schedule",
+      "title": "Course Schedule",
+      "difficulty": "medium",
+      "tags": [
+        "graph",
+        "topological-sort",
+        "BFS"
+      ],
+      "topics": [
+        "graphs"
+      ],
+      "entry": "canFinish",
+      "signature": {
+        "params": [
+          "int",
+          {
+            "array": {
+              "array": "int"
+            }
+          }
+        ],
+        "returns": "bool"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Course Schedule\n\nThere are `numCourses` courses labeled from `0` to `numCourses - 1`. You are given a list of `prerequisites` where `prerequisites[i] = [a, b]` means you must take course `b` before course `a`.\n\nReturn `true` if you can finish all courses (i.e., the prerequisite graph has no cycle), otherwise return `false`.\n\n## Example\n\nInput: `numCourses = 2`, `prerequisites = [[1, 0]]`\nOutput: `true`\nExplanation: Take course 0 first, then course 1.\n\nInput: `numCourses = 2`, `prerequisites = [[1, 0], [0, 1]]`\nOutput: `false`\nExplanation: There is a cycle.\n\n## Constraints\n- 1 <= numCourses <= 2000\n- 0 <= prerequisites.length <= 5000\n- prerequisites[i].length == 2\n- 0 <= a, b < numCourses\n- All prerequisite pairs are unique\n",
+    "starters": {
+      "python": "def canFinish(numCourses, prereqs):\n    # Return True if all courses can be completed (no cycle in the prerequisite graph).\n    pass\n",
+      "javascript": "function canFinish(numCourses, prereqs) {\n  // Return true if all courses can be completed (no cycle in the prerequisite graph).\n}\n"
+    },
+    "solutions": {
+      "python": "def canFinish(n, prereqs):\n    from collections import defaultdict, deque\n    g = defaultdict(list); indeg = [0]*n\n    for a, b in prereqs:\n        g[b].append(a); indeg[a] += 1\n    q = deque([i for i in range(n) if indeg[i] == 0]); seen = 0\n    while q:\n        v = q.popleft(); seen += 1\n        for w in g[v]:\n            indeg[w] -= 1\n            if indeg[w] == 0: q.append(w)\n    return seen == n\n",
+      "javascript": "function canFinish(n, prereqs) {\n  const g = Array.from({length: n}, () => []); const indeg = Array(n).fill(0);\n  for (const [a, b] of prereqs) { g[b].push(a); indeg[a]++; }\n  const q = []; for (let i = 0; i < n; i++) if (indeg[i] === 0) q.push(i);\n  let seen = 0;\n  while (q.length) { const v = q.shift(); seen++; for (const w of g[v]) if (--indeg[w] === 0) q.push(w); }\n  return seen === n;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          2,
+          [
+            [
+              1,
+              0
+            ]
+          ]
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          2,
+          [
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          1,
+          []
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          4,
+          [
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              2
+            ]
+          ]
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          3,
+          [
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              1
+            ],
+            [
+              0,
+              2
+            ]
+          ]
+        ],
+        "expected": false
+      }
+    ]
+  },
+  {
+    "type": "coding",
+    "meta": {
+      "id": "020-lca-bst",
+      "title": "Lowest Common Ancestor of a BST",
+      "difficulty": "easy",
+      "tags": [
+        "tree",
+        "BST",
+        "DFS"
+      ],
+      "topics": [
+        "trees"
+      ],
+      "entry": "lowestCommonAncestor",
+      "signature": {
+        "params": [
+          {
+            "tree": "int"
+          },
+          "int",
+          "int"
+        ],
+        "returns": "int"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Lowest Common Ancestor of a BST\n\nGiven a Binary Search Tree (BST) and two node values `p` and `q`, find the lowest common ancestor (LCA) of the two nodes.\n\nThe LCA is defined as the lowest node in the tree that has both `p` and `q` as descendants (a node is a descendant of itself).\n\nReturn the **value** at the LCA node (not the node itself).\n\n## Example\n\nInput: `root = [6,2,8,0,4,7,9,null,null,3,5]`, `p = 2`, `q = 8`\nOutput: `6`\nExplanation: The LCA of nodes 2 and 8 is 6 (the root), since 2 is in the left subtree and 8 is in the right subtree.\n\nInput: `root = [6,2,8,0,4,7,9,null,null,3,5]`, `p = 2`, `q = 4`\nOutput: `2`\nExplanation: The LCA of nodes 2 and 4 is 2, since 4 is in the subtree rooted at 2.\n\n## Constraints\n- The number of nodes in the tree is in the range [2, 10^5]\n- -10^9 <= Node.val <= 10^9\n- All node values are unique\n- p != q\n- p and q will exist in the BST\n",
+    "starters": {
+      "python": "def lowestCommonAncestor(root, p, q):\n    # Return the value at the lowest common ancestor node of p and q in the BST.\n    pass\n",
+      "javascript": "function lowestCommonAncestor(root, p, q) {\n  // Return the value at the lowest common ancestor node of p and q in the BST.\n}\n"
+    },
+    "solutions": {
+      "python": "def lowestCommonAncestor(root, p, q):\n    while root:\n        if p < root.val and q < root.val: root = root.left\n        elif p > root.val and q > root.val: root = root.right\n        else: return root.val\n    return -1\n",
+      "javascript": "function lowestCommonAncestor(root, p, q) {\n  while (root) {\n    if (p < root.val && q < root.val) root = root.left;\n    else if (p > root.val && q > root.val) root = root.right;\n    else return root.val;\n  }\n  return -1;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          [
+            6,
+            2,
+            8,
+            0,
+            4,
+            7,
+            9,
+            null,
+            null,
+            3,
+            5
+          ],
+          2,
+          8
+        ],
+        "expected": 6
+      },
+      {
+        "input": [
+          [
+            6,
+            2,
+            8,
+            0,
+            4,
+            7,
+            9,
+            null,
+            null,
+            3,
+            5
+          ],
+          2,
+          4
+        ],
+        "expected": 2
+      },
+      {
+        "input": [
+          [
+            6,
+            2,
+            8,
+            0,
+            4,
+            7,
+            9,
+            null,
+            null,
+            3,
+            5
+          ],
+          0,
+          5
+        ],
+        "expected": 2
+      },
+      {
+        "input": [
+          [
+            2,
+            1,
+            3
+          ],
+          1,
+          3
+        ],
+        "expected": 2
+      }
+    ]
+  },
+  {
     "type": "system_design",
     "meta": {
       "id": "001-design-url-shortener",
