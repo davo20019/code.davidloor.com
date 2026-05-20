@@ -441,6 +441,107 @@ export const problems: Problem[] = [
     ]
   },
   {
+    "type": "coding",
+    "meta": {
+      "id": "006-reverse-linked-list",
+      "title": "Reverse Linked List",
+      "difficulty": "easy",
+      "tags": [
+        "linked-list",
+        "recursion"
+      ],
+      "topics": [
+        "linked-list"
+      ],
+      "entry": "reverseList",
+      "signature": {
+        "params": [
+          {
+            "linked_list": "int"
+          }
+        ],
+        "returns": {
+          "linked_list": "int"
+        }
+      },
+      "validator": {
+        "kind": "linked_list_value_equal"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Reverse Linked List\n\nGiven the head of a singly linked list, reverse the list and return the reversed list's head.\n\n## Example\n\nInput: `head = [1,2,3,4,5]` → Output: `[5,4,3,2,1]`\nInput: `head = [1,2]` → Output: `[2,1]`\nInput: `head = []` → Output: `[]`\n\n## Constraints\n- The number of nodes in the list is in the range `[0, 5000]`.\n- -5000 ≤ Node.val ≤ 5000\n",
+    "starters": {
+      "python": "def reverseList(head):\n    # Return the head of the reversed linked list.\n    # ListNode is available in scope (injected by the harness).\n    pass\n",
+      "javascript": "function reverseList(head) {\n  // Return the head of the reversed linked list.\n  // ListNode is available in scope (injected by the harness).\n}\n"
+    },
+    "solutions": {
+      "python": "def reverseList(head):\n    prev = None\n    cur = head\n    while cur:\n        nxt = cur.next; cur.next = prev; prev = cur; cur = nxt\n    return prev\n",
+      "javascript": "function reverseList(head) {\n  let prev = null, cur = head;\n  while (cur) { const nxt = cur.next; cur.next = prev; prev = cur; cur = nxt; }\n  return prev;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ],
+        "expected": [
+          5,
+          4,
+          3,
+          2,
+          1
+        ]
+      },
+      {
+        "input": [
+          [
+            1,
+            2
+          ]
+        ],
+        "expected": [
+          2,
+          1
+        ]
+      },
+      {
+        "input": [
+          []
+        ],
+        "expected": []
+      },
+      {
+        "input": [
+          [
+            1
+          ]
+        ],
+        "expected": [
+          1
+        ]
+      },
+      {
+        "input": [
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "expected": [
+          3,
+          3,
+          3
+        ]
+      }
+    ]
+  },
+  {
     "type": "system_design",
     "meta": {
       "id": "001-design-url-shortener",
