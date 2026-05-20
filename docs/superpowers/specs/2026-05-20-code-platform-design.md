@@ -111,8 +111,8 @@ form-action 'none';
 **Runner operational policy** (because `connect-src 'self'` only blocks *external* exfiltration):
 
 - Runner origin serves static assets only; no API routes, no analytics, no third-party scripts.
-- The runner Worker (Cloudflare Worker, not Web Worker) returns 404 for any path not in an explicit static allowlist. Query strings are ignored / not logged.
-- Cloudflare access logs on the runner subdomain are treated as sensitive: not exported to third-party analytics, and request logging on this subdomain is minimized in the Cloudflare project settings.
+- The runner Worker (Cloudflare Worker, not Web Worker) returns 404 for any path not in an explicit static allowlist. Application code ignores query strings and performs no app-level request logging.
+- Cloudflare platform logs on the runner subdomain are minimized in project settings and treated as sensitive: not exported to third-party analytics. Platform logs that remain are out of application control and assumed to contain request paths.
 
 The runner has no cookies, no third-party scripts, and serves no HTML to humans — only the iframe.
 
@@ -142,8 +142,9 @@ type ProblemSpec = {
                                       //        tree<int>, grid<int>, etc.
     returns: ParamType;
   };
-  validator: ValidatorSpec;           // exact | set | set_of_sets | any_of |
-                                      //   tree_isomorphic | linked_list_value_equal
+  validator: ValidatorSpec;           // exact | set | set_of_lists | set_of_sets |
+                                      //   any_of | linked_list_value_equal |
+                                      //   tree_isomorphic
   tests: TestCase[];                  // [{ input: any[], expected: any }, ...]
 };
 ```
@@ -299,10 +300,10 @@ None of these require changes to the v1 runner protocol or problem repo shape.
 | Scaffolding, Next.js, OpenNext deploy pipeline | ~1 day |
 | Runner subdomain: iframe + Web Worker + Pyodide self-hosting + CSP + postMessage protocol v1 + cross-browser smoke | ~3 days |
 | JS runner branch in the same worker | ~0.5 day |
-| Typed signature system + 6 built-in validators + linked-list/tree/grid serializers (per language) | ~2 days |
+| Typed signature system + 7 built-in validators + linked-list/tree/grid serializers (per language) | ~2 days |
 | Problem list page, problem page, Monaco wiring, IDB persistence, autosave | ~1 day |
 | 20 coding problems (Python + JS solutions, signatures, validators, tests) + 7 system-design prompts | ~3-4 days |
-| CI: Pyodide-Node validator + GitHub Actions deploy | ~1 day |
+| CI: pyodide npm validator + GitHub Actions deploy | ~1 day |
 | Polish, accessibility, mobile layout, CSP debugging tail | ~1 day |
 | **Total** | **~12-14 focused days (~2 weeks) or ~5-6 weekends** |
 
