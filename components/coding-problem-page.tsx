@@ -119,7 +119,8 @@ export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
 
           <div className="mt-10 pt-5 border-t border-rule text-[11px] uppercase tracking-[0.16em] text-ink-dim space-y-1">
             <p>
-              Entry — <span className="font-mono normal-case tracking-normal text-ink-soft">
+              Entry —{" "}
+              <span className="font-mono normal-case tracking-normal text-ink-soft">
                 {problem.meta.entry}
               </span>
             </p>
@@ -130,6 +131,21 @@ export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
               </span>{" "}
               over {problem.tests.length} {problem.tests.length === 1 ? "test" : "tests"}
             </p>
+          </div>
+          <div className="mt-6 text-[11px] uppercase tracking-[0.18em] text-ink-dim">
+            Stuck?{" "}
+            <Link href="/learn/03-algorithmic-patterns/" className="text-lime hover:underline">
+              Browse algorithmic patterns →
+            </Link>{" "}
+            or read the{" "}
+            <Link href="/learn/01-python-foundations/" className="text-lime hover:underline">
+              Python
+            </Link>{" "}
+            /{" "}
+            <Link href="/learn/02-javascript-foundations/" className="text-lime hover:underline">
+              JS
+            </Link>{" "}
+            foundations.
           </div>
         </article>
 

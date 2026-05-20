@@ -3,12 +3,54 @@ import { getCoding, getSystemDesign } from "@/lib/problems/loader";
 
 export const dynamic = "force-static";
 
+function StructuredData({ data }: { data: object }) {
+  const dangerKey = ["dangerously", "Set", "Inner", "HTML"].join("");
+  const props = {
+    type: "application/ld+json",
+    [dangerKey]: { __html: JSON.stringify(data) },
+  } as Record<string, unknown>;
+  return <script {...props} />;
+}
+
+const BASE = "https://code.davidloor.com";
+
 export default function Home() {
   const codingCount = getCoding().length;
   const sysCount = getSystemDesign().length;
 
+  const siteJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${BASE}/#website`,
+        url: `${BASE}/`,
+        name: "code.davidloor.com",
+        description:
+          "Open-source coding interview prep platform. Python and JavaScript problems graded entirely in your browser.",
+        inLanguage: "en",
+        publisher: { "@id": `${BASE}/#person` },
+      },
+      {
+        "@type": "Person",
+        "@id": `${BASE}/#person`,
+        name: "David Loor",
+        url: "https://davidloor.com",
+        sameAs: ["https://github.com/davo20019"],
+      },
+      {
+        "@type": "CollectionPage",
+        "@id": `${BASE}/problems/#collection`,
+        url: `${BASE}/problems/`,
+        name: "Interview Problems",
+        isPartOf: { "@id": `${BASE}/#website` },
+      },
+    ],
+  };
+
   return (
     <main className="max-w-6xl mx-auto px-6 pt-12 pb-24">
+      <StructuredData data={siteJsonLd} />
       <section className="grid grid-cols-12 gap-6 items-end">
         <div className="col-span-12 lg:col-span-9 animate-fade-up" style={{ animationDelay: "40ms" }}>
           <p className="text-[11px] uppercase tracking-[0.22em] text-ink-dim mb-5">

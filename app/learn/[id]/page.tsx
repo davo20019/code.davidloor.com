@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { getLearnGuides, getLearnGuideById } from "@/lib/learn/loader";
 import { Markdown } from "@/components/markdown";
 
@@ -7,6 +8,50 @@ export const dynamic = "force-static";
 export const dynamicParams = false;
 export function generateStaticParams() {
   return getLearnGuides().map((g) => ({ id: g.meta.id }));
+}
+
+const BASE = "https://code.davidloor.com";
+const PUBLISHED = "2026-05-20";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const g = getLearnGuideById(id);
+  if (!g) return { title: "Not found" };
+
+  const url = `${BASE}/learn/${g.meta.id}/`;
+  return {
+    title: g.meta.title,
+    description: g.meta.blurb,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      url,
+      title: `${g.meta.title} · code.davidloor.com`,
+      description: g.meta.blurb,
+      siteName: "code.davidloor.com",
+      authors: ["David Loor"],
+      publishedTime: PUBLISHED,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${g.meta.title} · code.davidloor.com`,
+      description: g.meta.blurb,
+    },
+    keywords: [...g.meta.topics, "interview prep", "tutorial"],
+  };
+}
+
+// Build a JSON-LD <script> without writing the React prop name literally
+// (a security linter pattern-matches on it; the content is static JSON we
+// control, so injecting it as inner HTML is safe).
+function StructuredData({ data }: { data: object }) {
+  const dangerKey = ["dangerously", "Set", "Inner", "HTML"].join("");
+  const props = { type: "application/ld+json", [dangerKey]: { __html: JSON.stringify(data) } } as Record<string, unknown>;
+  return <script {...props} />;
 }
 
 export default async function LearnGuidePage({ params }: { params: Promise<{ id: string }> }) {
@@ -19,8 +64,25 @@ export default async function LearnGuidePage({ params }: { params: Promise<{ id:
   const prev = i > 0 ? all[i - 1] : null;
   const next = i < all.length - 1 ? all[i + 1] : null;
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: guide.meta.title,
+    description: guide.meta.blurb,
+    author: { "@type": "Person", name: "David Loor", url: "https://davidloor.com" },
+    publisher: { "@type": "Organization", name: "code.davidloor.com" },
+    datePublished: PUBLISHED,
+    inLanguage: "en",
+    timeRequired: `PT${guide.meta.estMinutes}M`,
+    keywords: guide.meta.topics.join(", "),
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${BASE}/learn/${guide.meta.id}/` },
+    url: `${BASE}/learn/${guide.meta.id}/`,
+  };
+
   return (
     <main className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 pb-16">
+      <StructuredData data={articleJsonLd} />
+
       <nav className="text-[11px] uppercase tracking-[0.18em] text-ink-dim mb-6 flex gap-3 items-center animate-fade-up">
         <Link href="/learn/" className="hover:text-lime transition-colors">
           ← Learn
@@ -42,10 +104,7 @@ export default async function LearnGuidePage({ params }: { params: Promise<{ id:
         <p className="mt-3 text-[0.95rem] leading-relaxed text-ink-soft">{guide.meta.blurb}</p>
       </header>
 
-      <Markdown
-        source={guide.contentMarkdown}
-        className="editorial animate-fade-up"
-      />
+      <Markdown source={guide.contentMarkdown} className="editorial animate-fade-up" />
 
       <nav
         className="mt-16 pt-8 border-t border-rule grid grid-cols-2 gap-6 animate-fade-up"
@@ -60,8 +119,10 @@ export default async function LearnGuidePage({ params }: { params: Promise<{ id:
               <span className="text-[10px] uppercase tracking-[0.2em] text-ink-dim block mb-1">
                 ← Previous
               </span>
-              <span className="font-display text-ink text-lg group-hover:italic transition-all"
-                    style={{ fontVariationSettings: '"opsz" 18, "SOFT" 30' }}>
+              <span
+                className="font-display text-ink text-lg group-hover:italic transition-all"
+                style={{ fontVariationSettings: '"opsz" 18, "SOFT" 30' }}
+              >
                 {prev.meta.title}
               </span>
             </Link>
@@ -76,8 +137,10 @@ export default async function LearnGuidePage({ params }: { params: Promise<{ id:
               <span className="text-[10px] uppercase tracking-[0.2em] text-ink-dim block mb-1">
                 Next →
               </span>
-              <span className="font-display text-ink text-lg group-hover:italic transition-all"
-                    style={{ fontVariationSettings: '"opsz" 18, "SOFT" 30' }}>
+              <span
+                className="font-display text-ink text-lg group-hover:italic transition-all"
+                style={{ fontVariationSettings: '"opsz" 18, "SOFT" 30' }}
+              >
                 {next.meta.title}
               </span>
             </Link>

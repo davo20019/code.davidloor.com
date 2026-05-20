@@ -30,29 +30,42 @@ export const metadata = {
   },
   description:
     "A small studio of coding and system-design problems. Python and JavaScript, graded entirely in your browser. Open source, MIT.",
-  authors: [{ name: "David Loor" }],
+  authors: [{ name: "David Loor", url: "https://davidloor.com" }],
+  creator: "David Loor",
+  publisher: "code.davidloor.com",
+  alternates: { canonical: "https://code.davidloor.com/" },
   keywords: [
-    "coding interview",
-    "system design",
-    "python practice",
-    "javascript practice",
+    "coding interview practice",
+    "system design interview",
+    "python interview prep",
+    "javascript interview prep",
     "leetcode alternative",
+    "open source leetcode",
     "pyodide",
-    "open source",
+    "browser code execution",
+    "two sum python",
+    "interview algorithms",
   ],
   openGraph: {
     type: "website",
-    url: "https://code.davidloor.com",
+    url: "https://code.davidloor.com/",
     title: "code.davidloor.com — interview problems",
     description:
       "Twenty coding problems and seven system-design prompts. Python and JavaScript, graded in your browser. No servers, no accounts.",
     siteName: "code.davidloor.com",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: "code.davidloor.com — interview problems",
     description:
       "Twenty coding problems and seven system-design prompts. Python and JavaScript, graded in your browser.",
+    creator: "@davo20019",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
 };
 
