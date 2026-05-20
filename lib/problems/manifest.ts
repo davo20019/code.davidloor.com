@@ -366,6 +366,81 @@ export const problems: Problem[] = [
     ]
   },
   {
+    "type": "coding",
+    "meta": {
+      "id": "005-valid-anagram",
+      "title": "Valid Anagram",
+      "difficulty": "easy",
+      "tags": [
+        "hash-map",
+        "string",
+        "sorting"
+      ],
+      "topics": [
+        "strings",
+        "hash-map"
+      ],
+      "entry": "isAnagram",
+      "signature": {
+        "params": [
+          "string",
+          "string"
+        ],
+        "returns": "bool"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Valid Anagram\n\nGiven two strings `s` and `t`, return `true` if `t` is an anagram of `s`, and `false` otherwise. An anagram is a word formed by rearranging the letters of another word using all the original letters exactly once.\n\n## Example\n\nInput: `s = \"anagram\"`, `t = \"nagaram\"` → Output: `true`\nInput: `s = \"rat\"`, `t = \"car\"` → Output: `false`\n\n## Constraints\n- 1 ≤ s.length, t.length ≤ 5 × 10⁴\n- `s` and `t` consist of lowercase English letters.\n",
+    "starters": {
+      "python": "def isAnagram(s, t):\n    # Return True if t is an anagram of s, False otherwise.\n    pass\n",
+      "javascript": "function isAnagram(s, t) {\n  // Return true if t is an anagram of s, false otherwise.\n}\n"
+    },
+    "solutions": {
+      "python": "def isAnagram(s, t):\n    return sorted(s) == sorted(t)\n",
+      "javascript": "function isAnagram(s, t) {\n  if (s.length !== t.length) return false;\n  return [...s].sort().join('') === [...t].sort().join('');\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          "anagram",
+          "nagaram"
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          "rat",
+          "car"
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          "a",
+          "a"
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          "ab",
+          "ba"
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          "abc",
+          "ab"
+        ],
+        "expected": false
+      }
+    ]
+  },
+  {
     "type": "system_design",
     "meta": {
       "id": "001-design-url-shortener",

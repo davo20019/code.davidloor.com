@@ -1,0 +1,12 @@
+title: Valid Anagram
+difficulty: easy
+tags: [hash-map, string, sorting]
+topics: [strings, hash-map]
+entry: isAnagram
+signature:
+  params:
+    - string
+    - string
+  returns: bool
+validator: { kind: exact }
+timeLimitMs: 5000

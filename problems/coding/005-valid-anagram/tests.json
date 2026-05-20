@@ -1,0 +1,7 @@
+[
+  { "input": ["anagram", "nagaram"], "expected": true },
+  { "input": ["rat", "car"],         "expected": false },
+  { "input": ["a", "a"],             "expected": true },
+  { "input": ["ab", "ba"],           "expected": true },
+  { "input": ["abc", "ab"],          "expected": false }
+]
