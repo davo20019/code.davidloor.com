@@ -2,4 +2,4 @@ title: Big-O & Complexity
 blurb: How to read time and space complexity from code, the seven complexity classes you'll meet, and the hidden costs that surprise people in interviews.
 topics: [complexity, big-o, analysis]
 estMinutes: 12
-order: 4
+order: 6

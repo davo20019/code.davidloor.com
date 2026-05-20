@@ -2,4 +2,4 @@ title: JavaScript Foundations
 blurb: Modern JavaScript for interview problems — let/const, Map and Set over plain objects, the sort comparator trap, and the array methods that solve most things.
 topics: [javascript, language, basics]
 estMinutes: 18
-order: 2
+order: 4

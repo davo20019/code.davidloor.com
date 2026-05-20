@@ -39,7 +39,7 @@ export default function LearnPage() {
               className="group focus-ring grid grid-cols-12 gap-4 items-baseline py-6 hover:bg-elevated transition-colors px-2 -mx-2"
             >
               <span className="col-span-2 sm:col-span-1 marker-num text-3xl sm:text-4xl text-lime leading-none">
-                {String(g.meta.order).padStart(2, "0")}
+                {String(i + 1).padStart(2, "0")}
               </span>
               <div className="col-span-10 sm:col-span-9 min-w-0">
                 <h2

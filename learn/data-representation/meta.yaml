@@ -1,0 +1,5 @@
+title: How Computers Represent Data
+blurb: Bits, bytes, integers, floats, characters. Why 0.1 + 0.2 ≠ 0.3, why the modulo operator is everywhere, and why arrays start at zero.
+topics: [fundamentals, data, math]
+estMinutes: 14
+order: 2

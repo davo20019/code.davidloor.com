@@ -88,7 +88,7 @@ export default async function LearnGuidePage({ params }: { params: Promise<{ id:
           ← Learn
         </Link>
         <span className="text-rule">/</span>
-        <span>Guide No. {String(guide.meta.order).padStart(2, "0")}</span>
+        <span>Guide No. {String(i + 1).padStart(2, "0")}</span>
       </nav>
 
       <header className="mb-8 pb-6 border-b border-rule animate-fade-up" style={{ animationDelay: "60ms" }}>
