@@ -91,6 +91,9 @@ function Masthead() {
           <a href="/problems/" className="hover:text-lime transition-colors">
             Problems
           </a>
+          <a href="/learn/" className="hover:text-lime transition-colors">
+            Learn
+          </a>
           <a
             href="https://github.com/davo20019/code.davidloor.com"
             className="hover:text-lime transition-colors"
