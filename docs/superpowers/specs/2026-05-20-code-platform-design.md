@@ -50,7 +50,7 @@ The runner subdomain is the security boundary. All user code executes inside an 
 - **Host:** Cloudflare Workers via `@opennextjs/cloudflare`.
   - Requires `compatibility_flags = ["nodejs_compat"]` in `wrangler.toml`.
   - Requires `compatibility_date >= "2024-09-23"`.
-  - Build output must fit Worker size limit (10 MB compressed; main app expected to be well under).
+  - Verify Worker bundle size against the active Cloudflare plan. Keep Pyodide and Monaco assets **out** of the Worker bundle; serve them as static assets via Workers Static Assets binding so only the Next.js server code counts against the Worker script limit.
 - **Editor:** Monaco.
 - **UI:** Tailwind + shadcn/ui.
 - **Python runtime:** Pyodide (CPython 3.12 on WebAssembly), bundled as static assets on the runner subdomain.
@@ -70,25 +70,36 @@ Two boundaries combine to contain user-submitted code:
    ```
    `allow-same-origin` is intentional here: the iframe needs IndexedDB on its own origin (Pyodide caches wheels). Because the runner is on a **different origin** from the main app, cross-origin policy prevents the iframe from reading main-app cookies, localStorage, or IndexedDB. The `event.origin` on incoming `postMessage` calls is the runner subdomain (not `"null"`), so the main app validates strictly.
 
-2. **Tight CSP on the runner origin.** Self-hosted Pyodide assets + `connect-src 'self'` means user code inside the runner cannot `fetch`/XHR/WebSocket to anywhere outside the runner subdomain — eliminating the exfiltration channel even for submitted code, test data, and stdout.
+2. **Tight CSP on the runner origin.** Self-hosted Pyodide assets + `connect-src 'self'` block all **external** network exfiltration: user code cannot `fetch`/XHR/WebSocket to anything outside the runner subdomain. User code can still hit *runner-origin* URLs (e.g., `fetch('/x?leak=...')`), which means any access logs/analytics on the runner origin must be treated as sensitive (see runner operational policy below).
 
 ### CSP per origin
 
 **Main app (`code.davidloor.com`):**
+
+Next.js App Router emits inline hydration scripts, so a strict CSP requires a **per-request nonce** set in middleware and threaded onto every framework-rendered `<script>` tag (this is the official Next.js pattern). Monaco loads syntax workers, so `worker-src 'self' blob:` is required.
+
 ```
 default-src 'self';
-script-src  'self';                                 # no eval needed
-style-src   'self' 'unsafe-inline';                 # Tailwind / shadcn
+script-src  'self' 'nonce-<per-request>' 'strict-dynamic';
+style-src   'self' 'unsafe-inline';                 # Tailwind / shadcn runtime styles
+worker-src  'self' blob:;                           # Monaco workers
 img-src     'self' data:;
 frame-src   https://runner.code.davidloor.com;
 connect-src 'self';
+base-uri    'none';
+form-action 'self';
 ```
 
+If nonce-based CSP proves flaky on OpenNext during implementation, fallback is `script-src 'self' 'unsafe-inline'` — documented as a known weakening and revisited before going public.
+
 **Runner subdomain (`runner.code.davidloor.com`):**
+
+Worker scripts are served as static assets (e.g., `/runner-worker.js`) from the runner origin. **Blob workers are forbidden** — they have inconsistent CSP-inheritance behavior across browsers, and a non-blob worker is also easier to reason about. CSP applies identically to `/runner.html`, `/runner-worker.js`, and any Pyodide-loaded script.
+
 ```
 default-src 'none';
 script-src  'self' 'unsafe-eval' 'wasm-unsafe-eval';   # mandatory for Pyodide + JS exec
-worker-src  'self' blob:;
+worker-src  'self';                                    # no blob: — static worker only
 connect-src 'self';                                    # NO external endpoints
 img-src     'none';
 style-src   'self';
@@ -96,6 +107,12 @@ font-src    'self';
 base-uri    'none';
 form-action 'none';
 ```
+
+**Runner operational policy** (because `connect-src 'self'` only blocks *external* exfiltration):
+
+- Runner origin serves static assets only; no API routes, no analytics, no third-party scripts.
+- The runner Worker (Cloudflare Worker, not Web Worker) returns 404 for any path not in an explicit static allowlist. Query strings are ignored / not logged.
+- Cloudflare access logs on the runner subdomain are treated as sensitive: not exported to third-party analytics, and request logging on this subdomain is minimized in the Cloudflare project settings.
 
 The runner has no cookies, no third-party scripts, and serves no HTML to humans — only the iframe.
 
@@ -156,9 +173,10 @@ Each validator is implemented once in the app repo (not per problem):
 
 | Validator | Use |
 |---|---|
-| `exact` | Strict deep-equal of primitive returns. |
-| `set` | Order-insensitive list comparison (e.g., 3Sum's triplets ignoring inner order). |
-| `set_of_sets` | Outer set + inner set (canonical 3Sum). |
+| `exact` | Strict deep-equal of primitives or ordered lists (order matters). |
+| `set` | Flat list compared as a multiset (outer order doesn't matter). |
+| `set_of_lists` | Outer collection unordered; inner lists ordered (e.g., a list of paths where path order within each path matters). |
+| `set_of_sets` | Outer and inner both unordered (canonical 3Sum: any triplet order, any output order). |
 | `any_of` | Multiple acceptable answers explicitly listed in the test case. |
 | `linked_list_value_equal` | Compare linked-list outputs by value sequence, regardless of node identity. |
 | `tree_isomorphic` | Compare BST/binary-tree outputs structurally. |
@@ -258,7 +276,7 @@ URL Shortener, Rate Limiter, News Feed, Chat App, Distributed Cache, Web Crawler
 - MIT license.
 - Public GitHub repo.
 - README explains: run locally with `npm dev`, contribute a problem by adding a folder.
-- **CI architecture:** GitHub Actions runs `scripts/validate-problem.mjs` using **Pyodide-Node** (Pyodide's Node distribution, same WASM build as the browser) plus standard Node for JS. The validator imports the same harness modules that the runner bundles, deserializes test inputs identically, and runs the reference solutions. Drift surface vs the browser runtime is small (Pyodide is the same package; JS runtime semantics are equivalent for problem-scoped code).
+- **CI architecture:** GitHub Actions runs `scripts/validate-problem.mjs` using the **`pyodide` npm package running in Node.js** (same WASM build as the browser, per Pyodide's official Node.js usage docs) plus standard Node for JS. The validator imports the same harness modules that the runner bundles, deserializes test inputs identically, and runs the reference solutions. Drift surface vs the browser runtime is small (Pyodide is the same WASM artifact; JS runtime semantics are equivalent for problem-scoped code with no DOM access).
 - Optional follow-up: a nightly Playwright job that re-runs the same problems through the real browser runner end-to-end, catching any divergence. Not required for v1.
 - Deploys to Cloudflare Workers on merges to `main` via GitHub Actions (`opennextjs-cloudflare build && wrangler deploy`).
 
