@@ -1,0 +1,6 @@
+[
+  { "input": ["leetcode", ["leet","code"]], "expected": true },
+  { "input": ["applepenapple", ["apple","pen"]], "expected": true },
+  { "input": ["catsandog", ["cats","dog","sand","and","cat"]], "expected": false },
+  { "input": ["a", ["a"]], "expected": true }
+]

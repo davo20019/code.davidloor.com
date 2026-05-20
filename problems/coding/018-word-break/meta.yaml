@@ -1,0 +1,12 @@
+title: Word Break
+difficulty: medium
+tags: [dynamic-programming, hash-map, string]
+topics: [dynamic-programming]
+entry: wordBreak
+signature:
+  params:
+    - string
+    - { array: string }
+  returns: bool
+validator: { kind: exact }
+timeLimitMs: 5000
