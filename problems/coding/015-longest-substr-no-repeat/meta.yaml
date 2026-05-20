@@ -1,0 +1,11 @@
+title: Longest Substring Without Repeating Characters
+difficulty: medium
+tags: [sliding-window, hash-map, string]
+topics: [sliding-window]
+entry: lengthOfLongestSubstring
+signature:
+  params:
+    - string
+  returns: int
+validator: { kind: exact }
+timeLimitMs: 5000
