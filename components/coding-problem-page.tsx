@@ -11,9 +11,9 @@ import type { CodingProblem } from "@/lib/problems/types";
 import type { RunResponse } from "@/lib/runner-protocol";
 
 const difficultyTone: Record<string, { letter: string; cls: string; name: string }> = {
-  easy: { letter: "E", cls: "text-forest border-forest/40 bg-forest-soft", name: "Easy" },
-  medium: { letter: "M", cls: "text-ochre border-ochre/40 bg-rust-soft/50", name: "Medium" },
-  hard: { letter: "H", cls: "text-crimson border-crimson/40 bg-crimson-soft", name: "Hard" },
+  easy: { letter: "E", cls: "text-mint border-mint/40 bg-mint-soft", name: "Easy" },
+  medium: { letter: "M", cls: "text-amber border-amber/40 bg-amber-soft", name: "Medium" },
+  hard: { letter: "H", cls: "text-magenta border-magenta/40 bg-magenta-soft", name: "Hard" },
 };
 
 export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
@@ -82,7 +82,7 @@ export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 pb-16">
       <nav className="text-[11px] uppercase tracking-[0.18em] text-ink-dim mb-6 flex gap-3 items-center animate-fade-up">
-        <Link href="/problems/" className="hover:text-rust transition-colors">
+        <Link href="/problems/" className="hover:text-lime transition-colors">
           ← Problems
         </Link>
         <span className="text-rule">/</span>
@@ -135,7 +135,7 @@ export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
 
         {/* RIGHT — workspace */}
         <section className="lg:col-span-7 min-w-0 animate-fade-up" style={{ animationDelay: "180ms" }}>
-          <div className="border border-rule bg-paper-deep/40">
+          <div className="border border-rule bg-elevated">
             {/* control strip */}
             <div className="flex items-center border-b border-rule">
               <LangTab active={lang === "python"} onClick={() => setLang("python")} label="Python" />
@@ -147,7 +147,7 @@ export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
               <div className="flex-1" />
               <button
                 onClick={onReset}
-                className="btn-tactile focus-ring px-3 py-3 text-[11px] uppercase tracking-[0.18em] text-ink-dim hover:text-rust border-l border-rule"
+                className="btn-tactile focus-ring px-3 py-3 text-[11px] uppercase tracking-[0.18em] text-ink-dim hover:text-lime border-l border-rule"
               >
                 Reset
               </button>
@@ -155,7 +155,7 @@ export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
                 onClick={onRun}
                 disabled={!runner.ready || running}
                 aria-busy={running}
-                className="btn-tactile focus-ring inline-flex items-center gap-2 bg-ink text-paper px-5 py-3 text-[12px] uppercase tracking-[0.2em] disabled:opacity-50 hover:bg-rust transition-colors border-l border-ink"
+                className="btn-tactile focus-ring inline-flex items-center gap-2 bg-lime text-ground px-5 py-3 text-[12px] uppercase tracking-[0.2em] disabled:opacity-50 hover:bg-lime-deep transition-colors border-l border-lime"
               >
                 {running ? (
                   <>
@@ -170,7 +170,7 @@ export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
             </div>
 
             {/* editor */}
-            <div className="bg-paper">
+            <div className="bg-ground">
               <CodeEditor value={code} language={lang} onChange={setCode} />
             </div>
           </div>
@@ -185,12 +185,12 @@ export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
             {canReveal(problem.meta.id, hadRun) ? (
               <button
                 onClick={() => setShowSolution((v) => !v)}
-                className="focus-ring text-ink-soft hover:text-rust transition-colors inline-flex items-center gap-2"
+                className="focus-ring text-ink-soft hover:text-lime transition-colors inline-flex items-center gap-2"
               >
                 <span className="text-[11px] uppercase tracking-[0.18em]">
                   {showSolution ? "Hide" : "Reveal"} reference solution
                 </span>
-                <span aria-hidden className="text-rust">
+                <span aria-hidden className="text-lime">
                   {showSolution ? "↑" : "↓"}
                 </span>
               </button>
@@ -200,14 +200,14 @@ export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
               </span>
             )}
             {showSolution && (
-              <pre className="mt-3 text-[0.8rem] leading-relaxed whitespace-pre-wrap bg-paper-deep border-l-2 border-rust p-4 font-mono text-ink-soft">
+              <pre className="mt-3 text-[0.8rem] leading-relaxed whitespace-pre-wrap bg-ground-deep border-l-2 border-lime p-4 font-mono text-ink-soft">
                 {problem.solutions[lang]}
               </pre>
             )}
           </div>
 
           {allPassed && (
-            <div className="mt-6 border border-forest/40 bg-forest-soft/60 px-4 py-3 text-[0.875rem] text-forest flex items-baseline gap-3 animate-fade-up">
+            <div className="mt-6 border border-mint/40 bg-mint-soft px-4 py-3 text-[0.875rem] text-mint flex items-baseline gap-3 animate-fade-up">
               <span className="font-display italic text-lg leading-none">✓</span>
               <span>
                 All tests pass. <span className="text-ink-dim">Saved to your local progress.</span>
@@ -233,14 +233,14 @@ function LangTab({
     <button
       onClick={onClick}
       className={`btn-tactile focus-ring px-4 py-3 text-[12px] uppercase tracking-[0.2em] border-r border-rule transition-colors ${
-        active ? "text-ink bg-paper" : "text-ink-dim hover:text-ink"
+        active ? "text-ink bg-ground" : "text-ink-dim hover:text-ink"
       }`}
       aria-pressed={active}
     >
       <span className="relative">
         {label}
         {active && (
-          <span aria-hidden className="absolute -bottom-3 left-0 right-0 h-[2px] bg-rust" />
+          <span aria-hidden className="absolute -bottom-3 left-0 right-0 h-[2px] bg-lime" />
         )}
       </span>
     </button>
@@ -259,7 +259,7 @@ function Spinner() {
   return (
     <span
       aria-hidden
-      className="inline-block w-3 h-3 border-2 border-paper/40 border-t-paper rounded-full animate-spin"
+      className="inline-block w-3 h-3 border-2 border-ground/40 border-t-ground rounded-full animate-spin"
     />
   );
 }

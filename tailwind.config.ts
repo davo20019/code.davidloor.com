@@ -10,34 +10,28 @@ const config: Config = {
         mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       colors: {
-        paper: "#F4F0E6",
-        "paper-deep": "#EAE3D2",
-        ink: "#171411",
-        "ink-soft": "#3A332B",
-        "ink-dim": "#7A6F60",
-        rule: "#D5CDB8",
-        "rule-soft": "#E4DCC8",
-        rust: {
-          DEFAULT: "#A8421B",
-          soft: "#E9D2C0",
-          deep: "#7A2F12",
+        // Dark graphite ground; warm parchment text; one electric accent.
+        ground: "#131419",
+        "ground-deep": "#0C0D11",
+        elevated: "#1B1D24",
+        ink: "#ECE7D8",
+        "ink-soft": "#C0BAA9",
+        "ink-dim": "#7A7565",
+        rule: "#2C2F3A",
+        "rule-soft": "#21232B",
+        // ACCENT: electric chartreuse — deliberately not warm orange/rust.
+        lime: {
+          DEFAULT: "#C8F049",
+          soft: "rgba(200, 240, 73, 0.12)",
+          deep: "#93B92A",
         },
-        forest: {
-          DEFAULT: "#324F37",
-          soft: "#D5DED2",
-        },
-        crimson: {
-          DEFAULT: "#8A1F1F",
-          soft: "#EDD3D3",
-        },
-        ochre: "#9C7A14",
+        // Difficulty + status palette tuned for dark ground.
+        mint: { DEFAULT: "#6FDCA0", soft: "rgba(111, 220, 160, 0.12)" },
+        amber: { DEFAULT: "#E5B445", soft: "rgba(229, 180, 69, 0.12)" },
+        magenta: { DEFAULT: "#FF5577", soft: "rgba(255, 85, 119, 0.12)" },
       },
-      letterSpacing: {
-        tighter: "-0.025em",
-      },
-      borderRadius: {
-        none: "0",
-      },
+      letterSpacing: { tighter: "-0.025em" },
+      borderRadius: { none: "0" },
       keyframes: {
         "fade-up": {
           "0%": { opacity: "0", transform: "translateY(8px)" },

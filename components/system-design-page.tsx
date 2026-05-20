@@ -53,7 +53,7 @@ export function SystemDesignPage({ problem }: { problem: SystemDesignProblem }) 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 pt-8 pb-16">
       <nav className="text-[11px] uppercase tracking-[0.18em] text-ink-dim mb-6 flex gap-3 items-center animate-fade-up">
-        <Link href="/problems/" className="hover:text-rust transition-colors">
+        <Link href="/problems/" className="hover:text-lime transition-colors">
           ← Problems
         </Link>
         <span className="text-rule">/</span>
@@ -86,17 +86,17 @@ export function SystemDesignPage({ problem }: { problem: SystemDesignProblem }) 
           </p>
           <div className="mt-2 h-[3px] bg-rule-soft overflow-hidden">
             <div
-              className={`h-full ${overtime ? "bg-crimson" : "bg-rust"} transition-all duration-700`}
+              className={`h-full ${overtime ? "bg-magenta" : "bg-lime"} transition-all duration-700`}
               style={{ width: `${pct}%` }}
             />
           </div>
           <button
             onClick={() => setRunning((r) => !r)}
-            className="btn-tactile focus-ring mt-3 text-[11px] uppercase tracking-[0.18em] text-ink-soft hover:text-rust transition-colors inline-flex items-center gap-2"
+            className="btn-tactile focus-ring mt-3 text-[11px] uppercase tracking-[0.18em] text-ink-soft hover:text-lime transition-colors inline-flex items-center gap-2"
           >
             <span
               aria-hidden
-              className={`inline-block w-1.5 h-1.5 ${running ? "bg-rust" : "bg-ink-dim"} rounded-full ${
+              className={`inline-block w-1.5 h-1.5 ${running ? "bg-lime" : "bg-ink-dim"} rounded-full ${
                 running ? "animate-pulse" : ""
               }`}
             />
@@ -121,19 +121,19 @@ export function SystemDesignPage({ problem }: { problem: SystemDesignProblem }) 
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Sketch the system. Functional requirements, scale, API shape, data model, bottlenecks, mitigations…"
-          className="w-full h-72 p-4 bg-paper-deep/50 border border-rule font-mono text-[0.85rem] leading-relaxed text-ink focus:outline-none focus:border-rust transition-colors"
+          className="w-full h-72 p-4 bg-elevated border border-rule font-mono text-[0.85rem] leading-relaxed text-ink focus:outline-none focus:border-lime transition-colors"
         />
       </section>
 
       <section className="mt-10 pt-6 border-t border-rule animate-fade-up" style={{ animationDelay: "300ms" }}>
         <button
           onClick={() => setShow((s) => !s)}
-          className="focus-ring text-ink-soft hover:text-rust transition-colors inline-flex items-center gap-2"
+          className="focus-ring text-ink-soft hover:text-lime transition-colors inline-flex items-center gap-2"
         >
           <span className="text-[11px] uppercase tracking-[0.18em]">
             {show ? "Hide reference points" : "Reveal reference talking points"}
           </span>
-          <span aria-hidden className="text-rust">
+          <span aria-hidden className="text-lime">
             {show ? "↑" : "↓"}
           </span>
         </button>

@@ -25,7 +25,7 @@ export default function Home() {
             <span className="italic" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100, "WONK" 1' }}>
               Write the answer.
             </span>{" "}
-            <span className="text-rust">Run it.</span>
+            <span className="text-lime">Run it.</span>
           </h1>
         </div>
         <div
@@ -49,7 +49,7 @@ export default function Home() {
             count={codingCount}
             label="Coding Problems"
             blurb="Twenty staples — arrays, hash maps, two-pointer, BFS, DP. Python and JavaScript both required to pass."
-            href="/problems/"
+            href="/problems/#coding"
             delayMs={320}
           />
           <Card
@@ -57,7 +57,7 @@ export default function Home() {
             count={sysCount}
             label="System Design"
             blurb="Open prompts to time yourself against. Sketch in the notes pane, then reveal reference talking points."
-            href="/problems/"
+            href="/problems/#system-design"
             delayMs={400}
           />
         </div>
@@ -79,18 +79,21 @@ export default function Home() {
           </p>
           <p>
             The grader is declarative: every problem declares a signature and a validator
-            (<code className="font-mono text-[0.85em] bg-rust-soft/60 text-rust-deep px-1.5 py-0.5">exact</code>,{" "}
-            <code className="font-mono text-[0.85em] bg-rust-soft/60 text-rust-deep px-1.5 py-0.5">set</code>,{" "}
-            <code className="font-mono text-[0.85em] bg-rust-soft/60 text-rust-deep px-1.5 py-0.5">set_of_sets</code>,
-            ...). The harness handles the rest, so problem authors never ship executable code.
+            (<code className="font-mono text-[0.85em] bg-lime/10 text-lime px-1.5 py-0.5">exact</code>,{" "}
+            <code className="font-mono text-[0.85em] bg-lime/10 text-lime px-1.5 py-0.5">set</code>,{" "}
+            <code className="font-mono text-[0.85em] bg-lime/10 text-lime px-1.5 py-0.5">set_of_sets</code>
+            , ...). The harness handles the rest, so problem authors never ship executable code.
           </p>
         </div>
       </section>
 
-      <div className="mt-14 flex flex-wrap items-center gap-4 animate-fade-up" style={{ animationDelay: "580ms" }}>
+      <div
+        className="mt-14 flex flex-wrap items-center gap-4 animate-fade-up"
+        style={{ animationDelay: "580ms" }}
+      >
         <Link
           href="/problems/"
-          className="btn-tactile focus-ring inline-flex items-center gap-3 bg-ink text-paper px-7 py-3.5 text-[13px] uppercase tracking-[0.18em] hover:bg-rust transition-colors"
+          className="btn-tactile focus-ring inline-flex items-center gap-3 bg-lime text-ground px-7 py-3.5 text-[13px] uppercase tracking-[0.18em] hover:bg-lime-deep transition-colors"
         >
           Open the problem set
           <span aria-hidden>→</span>
@@ -121,11 +124,11 @@ function Card({
   return (
     <Link
       href={href}
-      className="group block bg-paper-deep/60 border border-rule p-6 hover:border-rust transition-colors animate-fade-up focus-ring"
+      className="group block bg-elevated border border-rule p-6 hover:border-lime transition-colors animate-fade-up focus-ring"
       style={{ animationDelay: `${delayMs}ms` }}
     >
       <div className="flex items-baseline justify-between mb-3">
-        <span className="marker-num text-[3rem] text-rust leading-none">{index}</span>
+        <span className="marker-num text-[3rem] text-lime leading-none">{index}</span>
         <span
           className="font-display italic text-ink-dim text-xl"
           style={{ fontVariationSettings: '"opsz" 24, "WONK" 1' }}
@@ -140,7 +143,7 @@ function Card({
         {label}
       </h3>
       <p className="text-[0.875rem] leading-relaxed text-ink-soft">{blurb}</p>
-      <span className="mt-4 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-ink-dim group-hover:text-rust transition-colors">
+      <span className="mt-4 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-ink-dim group-hover:text-lime transition-colors">
         Browse <span aria-hidden>→</span>
       </span>
     </Link>

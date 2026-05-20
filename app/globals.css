@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
-  --grain-opacity: 0.04;
+  color-scheme: dark;
+  --grain-opacity: 0.06;
 }
 
 html {
@@ -19,28 +19,30 @@ body {
 }
 
 body {
-  /* Subtle paper grain — a tiny SVG noise texture layered over the paper color. */
-  background-color: #f4f0e6;
+  /* Graphite ground with a faint cool-toned noise layer. */
+  background-color: #131419;
   background-image:
-    radial-gradient(circle at 1px 1px, rgba(23, 20, 17, var(--grain-opacity)) 1px, transparent 0);
-  background-size: 3px 3px;
+    radial-gradient(circle at 1px 1px, rgba(236, 231, 216, var(--grain-opacity)) 1px, transparent 0),
+    linear-gradient(180deg, rgba(200, 240, 73, 0.02) 0%, transparent 380px);
+  background-size: 4px 4px, 100% 100%;
+  background-attachment: fixed, fixed;
 }
 
 ::selection {
-  background-color: #e9d2c0;
-  color: #171411;
+  background-color: rgba(200, 240, 73, 0.35);
+  color: #ECE7D8;
 }
 
-/* Editorial prose treatment for problem statements. */
+/* Editorial prose for problem statements (dark ground). */
 .editorial {
-  color: #3a332b;
+  color: #C0BAA9;
   font-size: 0.95rem;
   line-height: 1.7;
 }
 .editorial h1 {
   font-family: var(--font-display);
-  color: #171411;
-  font-weight: 500;
+  color: #ECE7D8;
+  font-weight: 400;
   font-size: clamp(1.875rem, 4vw, 2.5rem);
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -49,7 +51,7 @@ body {
 }
 .editorial h2 {
   font-family: var(--font-display);
-  color: #171411;
+  color: #ECE7D8;
   font-weight: 500;
   font-style: italic;
   font-size: 1.25rem;
@@ -61,11 +63,11 @@ body {
 }
 .editorial h3 {
   font-family: var(--font-body);
-  color: #171411;
+  color: #ECE7D8;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
   margin-top: 1.25rem;
   margin-bottom: 0.5rem;
 }
@@ -75,20 +77,20 @@ body {
 }
 .editorial p:first-of-type::first-letter {
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 3rem;
+  font-weight: 400;
+  font-size: 3.25rem;
   line-height: 0.85;
   float: left;
   margin-right: 0.5rem;
   margin-top: 0.25rem;
-  color: #a8421b;
+  color: #C8F049;
   font-variation-settings: "opsz" 144, "WONK" 1;
 }
 .editorial code {
   font-family: var(--font-mono);
   font-size: 0.85em;
-  background-color: rgba(168, 66, 27, 0.08);
-  color: #7a2f12;
+  background-color: rgba(200, 240, 73, 0.08);
+  color: #C8F049;
   padding: 0.08rem 0.35rem;
   border-radius: 2px;
 }
@@ -96,12 +98,12 @@ body {
 .editorial pre code {
   font-family: var(--font-mono);
   background-color: transparent;
-  color: #171411;
+  color: #ECE7D8;
   padding: 0;
 }
 .editorial pre {
-  background-color: #eae3d2;
-  border-left: 2px solid #a8421b;
+  background-color: #0C0D11;
+  border-left: 2px solid #C8F049;
   padding: 0.75rem 1rem;
   margin: 1rem 0;
   font-size: 0.8rem;
@@ -123,39 +125,44 @@ body {
   content: "—";
   position: absolute;
   left: 0;
-  color: #a8421b;
+  color: #C8F049;
   font-weight: 600;
 }
 .editorial strong {
   font-weight: 600;
-  color: #171411;
+  color: #ECE7D8;
 }
 .editorial a {
-  color: #a8421b;
+  color: #C8F049;
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
 }
 .editorial blockquote {
-  border-left: 2px solid #d5cdb8;
+  border-left: 2px solid #2C2F3A;
   padding-left: 1rem;
   margin: 1rem 0;
   font-style: italic;
-  color: #7a6f60;
+  color: #7A7565;
 }
 .editorial hr {
   border: 0;
-  border-top: 1px solid #d5cdb8;
+  border-top: 1px solid #2C2F3A;
   margin: 2rem 0;
 }
 
-/* Tactile button base used by Run, language tabs, etc. */
+/* Tactile button base. */
 .btn-tactile {
   position: relative;
   font-family: var(--font-body);
   font-weight: 500;
   letter-spacing: 0.02em;
-  transition: transform 80ms ease, box-shadow 80ms ease, background-color 120ms ease, color 120ms ease;
+  transition:
+    transform 80ms ease,
+    box-shadow 80ms ease,
+    background-color 120ms ease,
+    color 120ms ease,
+    border-color 120ms ease;
 }
 .btn-tactile:active:not(:disabled) {
   transform: translateY(1px);
@@ -168,7 +175,7 @@ body {
   transition: outline-color 80ms ease;
 }
 .focus-ring:focus-visible {
-  outline-color: #a8421b;
+  outline-color: #C8F049;
 }
 
 /* Marker style for problem numbers. */
@@ -180,7 +187,7 @@ body {
   letter-spacing: -0.04em;
 }
 
-/* CodeMirror chrome overrides (light theme baseline; component sets the rest). */
+/* CodeMirror baseline. */
 .cm-theme {
   font-family: var(--font-mono);
 }

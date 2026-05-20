@@ -4,9 +4,9 @@ import { getCoding, getSystemDesign } from "@/lib/problems/loader";
 export const dynamic = "force-static";
 
 const difficultyMark: Record<string, { letter: string; tone: string; label: string }> = {
-  easy: { letter: "E", tone: "text-forest border-forest/40 bg-forest-soft", label: "easy" },
-  medium: { letter: "M", tone: "text-ochre border-ochre/40 bg-rust-soft/50", label: "medium" },
-  hard: { letter: "H", tone: "text-crimson border-crimson/40 bg-crimson-soft", label: "hard" },
+  easy: { letter: "E", tone: "text-mint border-mint/40 bg-mint-soft", label: "easy" },
+  medium: { letter: "M", tone: "text-amber border-amber/40 bg-amber-soft", label: "medium" },
+  hard: { letter: "H", tone: "text-magenta border-magenta/40 bg-magenta-soft", label: "hard" },
 };
 
 export default function ProblemsPage() {
@@ -37,7 +37,7 @@ export default function ProblemsPage() {
         </div>
       </header>
 
-      <Section number="I" title="Coding" subtitle="auto-graded, both languages" delayMs={200}>
+      <Section id="coding" number="I" title="Coding" subtitle="auto-graded, both languages" delayMs={200}>
         <ol className="divide-y divide-rule border-y border-rule">
           {coding.map((p, i) => {
             if (p.type !== "coding") return null;
@@ -46,9 +46,9 @@ export default function ProblemsPage() {
               <li key={p.meta.id} className="animate-fade-up" style={{ animationDelay: `${260 + i * 14}ms` }}>
                 <Link
                   href={`/problems/${p.meta.id}/`}
-                  className="group focus-ring grid grid-cols-12 gap-4 items-center py-4 hover:bg-paper-deep/50 transition-colors px-2 -mx-2"
+                  className="group focus-ring grid grid-cols-12 gap-4 items-center py-4 hover:bg-elevated transition-colors px-2 -mx-2"
                 >
-                  <span className="col-span-2 sm:col-span-1 marker-num text-2xl sm:text-3xl text-ink-dim group-hover:text-rust transition-colors">
+                  <span className="col-span-2 sm:col-span-1 marker-num text-2xl sm:text-3xl text-ink-dim group-hover:text-lime transition-colors">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span
@@ -75,7 +75,13 @@ export default function ProblemsPage() {
         </ol>
       </Section>
 
-      <Section number="II" title="System Design" subtitle="open-ended, time yourself" delayMs={520}>
+      <Section
+        id="system-design"
+        number="II"
+        title="System Design"
+        subtitle="open-ended, time yourself"
+        delayMs={520}
+      >
         <ol className="divide-y divide-rule border-y border-rule">
           {sys.map((p, i) => {
             if (p.type !== "system_design") return null;
@@ -83,9 +89,9 @@ export default function ProblemsPage() {
               <li key={p.meta.id} className="animate-fade-up" style={{ animationDelay: `${580 + i * 30}ms` }}>
                 <Link
                   href={`/problems/${p.meta.id}/`}
-                  className="group focus-ring grid grid-cols-12 gap-4 items-center py-4 hover:bg-paper-deep/50 transition-colors px-2 -mx-2"
+                  className="group focus-ring grid grid-cols-12 gap-4 items-center py-4 hover:bg-elevated transition-colors px-2 -mx-2"
                 >
-                  <span className="col-span-2 sm:col-span-1 marker-num text-2xl sm:text-3xl text-ink-dim group-hover:text-rust transition-colors">
+                  <span className="col-span-2 sm:col-span-1 marker-num text-2xl sm:text-3xl text-ink-dim group-hover:text-lime transition-colors">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span
@@ -111,12 +117,14 @@ export default function ProblemsPage() {
 }
 
 function Section({
+  id,
   number,
   title,
   subtitle,
   delayMs,
   children,
 }: {
+  id: string;
   number: string;
   title: string;
   subtitle: string;
@@ -124,13 +132,13 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="mt-16">
+    <section id={id} className="mt-16 scroll-mt-20">
       <div
         className="flex items-baseline justify-between mb-4 animate-fade-up"
         style={{ animationDelay: `${delayMs}ms` }}
       >
         <h2 className="flex items-baseline gap-4">
-          <span className="marker-num text-rust text-4xl">{number}</span>
+          <span className="marker-num text-lime text-4xl">{number}</span>
           <span
             className="font-display text-ink text-2xl"
             style={{ fontVariationSettings: '"opsz" 24, "SOFT" 30' }}

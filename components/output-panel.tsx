@@ -10,8 +10,8 @@ export function OutputPanel({
 }) {
   if (warming) {
     return (
-      <div className="border-l-2 border-rust bg-rust-soft/40 px-4 py-3 flex items-center gap-3 text-[0.875rem] text-ink-soft">
-        <span aria-hidden className="inline-block w-2.5 h-2.5 bg-rust rounded-full animate-pulse" />
+      <div className="border-l-2 border-amber bg-amber-soft px-4 py-3 flex items-center gap-3 text-[0.875rem] text-ink-soft">
+        <span aria-hidden className="inline-block w-2.5 h-2.5 bg-amber rounded-full animate-pulse" />
         <span>
           Resetting <span className="font-medium text-ink">{warming === "python" ? "Python" : "JavaScript"}</span>{" "}
           engine…
@@ -32,7 +32,7 @@ export function OutputPanel({
   if (response.type === "error") {
     return (
       <Card tone="error" header="Runtime error">
-        <pre className="font-mono text-[0.8rem] leading-relaxed whitespace-pre-wrap text-crimson">
+        <pre className="font-mono text-[0.8rem] leading-relaxed whitespace-pre-wrap text-magenta">
           {response.message}
         </pre>
       </Card>
@@ -61,7 +61,7 @@ export function OutputPanel({
         <header className="flex items-baseline justify-between gap-4 pb-3 border-b border-rule">
           <div className="flex items-baseline gap-3 min-w-0">
             <span
-              className={`marker-num text-3xl leading-none ${allPassed ? "text-forest" : "text-crimson"}`}
+              className={`marker-num text-3xl leading-none ${allPassed ? "text-mint" : "text-magenta"}`}
             >
               {passed}
               <span className="text-ink-dim">/{total}</span>
@@ -92,11 +92,11 @@ export function OutputPanel({
                   <span className="text-ink-dim uppercase tracking-[0.16em] text-[0.65rem] pt-0.5">expected</span>
                   <code className="text-ink-soft break-all">{json(p.expected)}</code>
                   <span className="text-ink-dim uppercase tracking-[0.16em] text-[0.65rem] pt-0.5">actual</span>
-                  <code className="text-crimson break-all">{json(p.actual)}</code>
+                  <code className="text-magenta break-all">{json(p.actual)}</code>
                   {p.error && (
                     <>
                       <span className="text-ink-dim uppercase tracking-[0.16em] text-[0.65rem] pt-0.5">error</span>
-                      <code className="text-crimson break-all whitespace-pre-wrap">{p.error}</code>
+                      <code className="text-magenta break-all whitespace-pre-wrap">{p.error}</code>
                     </>
                   )}
                 </div>
@@ -104,10 +104,10 @@ export function OutputPanel({
 
               {p.stdout && (
                 <details className="mt-2 group">
-                  <summary className="cursor-pointer text-[10px] uppercase tracking-[0.18em] text-ink-dim hover:text-rust transition-colors">
+                  <summary className="cursor-pointer text-[10px] uppercase tracking-[0.18em] text-ink-dim hover:text-lime transition-colors">
                     stdout · {p.stdout.length} chars
                   </summary>
-                  <pre className="mt-1 text-[0.75rem] leading-relaxed font-mono whitespace-pre-wrap text-ink-soft bg-paper-deep/60 border-l-2 border-rule px-3 py-2">
+                  <pre className="mt-1 text-[0.75rem] leading-relaxed font-mono whitespace-pre-wrap text-ink-soft bg-elevated border-l-2 border-rule px-3 py-2">
                     {p.stdout}
                   </pre>
                 </details>
@@ -136,8 +136,8 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className="border-l-2 border-crimson bg-crimson-soft/40 px-4 py-3">
-      <p className="text-[10px] uppercase tracking-[0.18em] text-crimson mb-1.5">{header}</p>
+    <div className="border-l-2 border-magenta bg-magenta-soft px-4 py-3">
+      <p className="text-[10px] uppercase tracking-[0.18em] text-magenta mb-1.5">{header}</p>
       {children}
     </div>
   );
@@ -147,7 +147,7 @@ function Mark({ passed }: { passed: boolean }) {
   return passed ? (
     <span
       aria-label="passed"
-      className="inline-flex items-center justify-center w-4 h-4 border border-forest/60 text-forest text-[10px] leading-none"
+      className="inline-flex items-center justify-center w-4 h-4 border border-mint/60 text-mint text-[10px] leading-none"
       style={{ paddingBottom: "1px" }}
     >
       ✓
@@ -155,7 +155,7 @@ function Mark({ passed }: { passed: boolean }) {
   ) : (
     <span
       aria-label="failed"
-      className="inline-flex items-center justify-center w-4 h-4 border border-crimson/60 text-crimson text-[10px] leading-none"
+      className="inline-flex items-center justify-center w-4 h-4 border border-magenta/60 text-magenta text-[10px] leading-none"
     >
       ✕
     </span>
