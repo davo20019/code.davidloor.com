@@ -103,17 +103,20 @@ export function CodeEditor({
   const extensions = useMemo<Extension[]>(
     () => [
       language === "python" ? python() : javascript({ jsx: false, typescript: false }),
-      graphiteTheme,
       syntaxHighlighting(graphiteHighlight),
       EditorView.lineWrapping,
     ],
     [language],
   );
 
+  // `@uiw/react-codemirror` ships its own default light theme unless we
+  // pass a theme via the `theme` prop. Adding our theme through
+  // `extensions` is not enough — it has to be the theme prop value.
   return (
     <CodeMirror
       value={value}
       height={height}
+      theme={graphiteTheme}
       extensions={extensions}
       onChange={onChange}
       basicSetup={{
