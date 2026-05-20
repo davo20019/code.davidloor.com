@@ -1,24 +1,33 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import DOMPurify from "isomorphic-dompurify";
-import { marked } from "marked";
 import { useRunner } from "@/components/runner-frame";
 import { CodeEditor } from "@/components/code-editor";
 import { OutputPanel } from "@/components/output-panel";
-import { loadCode, saveCode } from "@/lib/persistence/idb";
+import { Markdown } from "@/components/markdown";
+import { loadCode, saveCode, markComplete } from "@/lib/persistence/idb";
 import { canReveal, getRevealStart } from "@/lib/persistence/session";
 import type { CodingProblem } from "@/lib/problems/types";
 import type { RunResponse } from "@/lib/runner-protocol";
+
+const difficultyTone: Record<string, { letter: string; cls: string; name: string }> = {
+  easy: { letter: "E", cls: "text-forest border-forest/40 bg-forest-soft", name: "Easy" },
+  medium: { letter: "M", cls: "text-ochre border-ochre/40 bg-rust-soft/50", name: "Medium" },
+  hard: { letter: "H", cls: "text-crimson border-crimson/40 bg-crimson-soft", name: "Hard" },
+};
 
 export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
   const [lang, setLang] = useState<"python" | "javascript">("python");
   const [code, setCode] = useState(problem.starters[lang]);
   const [response, setResponse] = useState<RunResponse | null>(null);
+  const [running, setRunning] = useState(false);
   const [hadRun, setHadRun] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
   const runner = useRunner();
 
-  useEffect(() => { getRevealStart(problem.meta.id); }, [problem.meta.id]);
+  useEffect(() => {
+    getRevealStart(problem.meta.id);
+  }, [problem.meta.id]);
 
   useEffect(() => {
     let cancelled = false;
@@ -26,56 +35,231 @@ export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
       const saved = await loadCode(problem.meta.id, lang);
       if (!cancelled) setCode(saved ?? problem.starters[lang]);
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [problem.meta.id, lang, problem.starters]);
 
   useEffect(() => {
-    const t = setTimeout(() => { void saveCode(problem.meta.id, lang, code); }, 400);
+    const t = setTimeout(() => {
+      void saveCode(problem.meta.id, lang, code);
+    }, 400);
     return () => clearTimeout(t);
   }, [code, lang, problem.meta.id]);
 
   async function onRun() {
-    const resp = await runner.run({
-      language: lang,
-      code,
-      problem: { meta: problem.meta, tests: problem.tests },
-      timeLimitMs: problem.meta.timeLimitMs ?? 5000,
-    });
-    setResponse(resp);
-    setHadRun(true);
+    setRunning(true);
+    try {
+      const resp = await runner.run({
+        language: lang,
+        code,
+        problem: { meta: problem.meta, tests: problem.tests },
+        timeLimitMs: problem.meta.timeLimitMs ?? 5000,
+      });
+      setResponse(resp);
+      setHadRun(true);
+      if (
+        resp.type === "result" &&
+        resp.perTest.length > 0 &&
+        resp.perTest.every((p) => p.passed)
+      ) {
+        void markComplete(problem.meta.id);
+      }
+    } finally {
+      setRunning(false);
+    }
   }
 
-  const html = DOMPurify.sanitize(marked.parse(problem.statementMarkdown) as string);
+  function onReset() {
+    setCode(problem.starters[lang]);
+    setResponse(null);
+  }
+
+  const d = difficultyTone[problem.meta.difficulty] ?? difficultyTone.easy;
+  const allPassed =
+    response?.type === "result" && response.perTest.length > 0 && response.perTest.every((p) => p.passed);
 
   return (
-    <main className="grid lg:grid-cols-2 gap-4 max-w-7xl mx-auto p-4">
-      <article className="prose dark:prose-invert max-w-none">
-        <h1>{problem.meta.title}</h1>
-        <div dangerouslySetInnerHTML={{ __html: html }} />
-      </article>
-      <section className="space-y-3 min-w-0 overflow-auto">
-        <div className="flex gap-2 items-center">
-          <button onClick={() => setLang("python")} className={`px-3 py-1 rounded focus:outline focus:outline-2 focus:outline-blue-600 focus-visible:outline ${lang === "python" ? "bg-black text-white" : "bg-gray-200 dark:bg-gray-800"}`}>Python</button>
-          <button onClick={() => setLang("javascript")} className={`px-3 py-1 rounded focus:outline focus:outline-2 focus:outline-blue-600 focus-visible:outline ${lang === "javascript" ? "bg-black text-white" : "bg-gray-200 dark:bg-gray-800"}`}>JavaScript</button>
-          <button onClick={onRun} disabled={!runner.ready} className="ml-auto px-3 py-1 rounded bg-green-600 text-white disabled:opacity-50 focus:outline focus:outline-2 focus:outline-blue-600 focus-visible:outline">Run</button>
-        </div>
-        <CodeEditor value={code} language={lang} onChange={setCode} />
-        <OutputPanel response={response} warming={runner.warming} />
-        <div className="text-sm">
-          {canReveal(problem.meta.id, hadRun) ? (
-            <button onClick={() => setShowSolution((v) => !v)} className="underline focus:outline focus:outline-2 focus:outline-blue-600 focus-visible:outline">
-              {showSolution ? "Hide" : "Reveal"} reference solution
-            </button>
-          ) : (
-            <span className="text-gray-500">Reveal solution after at least one run and 60s of work.</span>
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 pb-16">
+      <nav className="text-[11px] uppercase tracking-[0.18em] text-ink-dim mb-6 flex gap-3 items-center animate-fade-up">
+        <Link href="/problems/" className="hover:text-rust transition-colors">
+          ← Problems
+        </Link>
+        <span className="text-rule">/</span>
+        <span>Coding · No. {problem.meta.id.split("-")[0]}</span>
+      </nav>
+
+      <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
+        {/* LEFT — statement */}
+        <article className="lg:col-span-5 min-w-0 animate-fade-up" style={{ animationDelay: "80ms" }}>
+          <header className="mb-6 pb-6 border-b border-rule">
+            <div className="flex items-center gap-2 flex-wrap mb-3">
+              <span
+                className={`inline-flex items-center justify-center w-6 h-6 border ${d.cls} text-[10px] font-semibold`}
+                title={d.name}
+              >
+                {d.letter}
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.18em] text-ink-dim">{d.name}</span>
+              {problem.meta.tags.map((t) => (
+                <span key={t} className="text-[10px] uppercase tracking-[0.18em] text-ink-dim">
+                  · {t}
+                </span>
+              ))}
+            </div>
+            <h1
+              className="font-display text-ink leading-[1.02] tracking-tighter text-[clamp(2rem,5vw,3.25rem)]"
+              style={{ fontVariationSettings: '"opsz" 144, "SOFT" 30, "WONK" 1' }}
+            >
+              {problem.meta.title}
+            </h1>
+          </header>
+
+          <Markdown source={problem.statementMarkdown} className="editorial" />
+
+          <div className="mt-10 pt-5 border-t border-rule text-[11px] uppercase tracking-[0.16em] text-ink-dim space-y-1">
+            <p>
+              Entry — <span className="font-mono normal-case tracking-normal text-ink-soft">
+                {problem.meta.entry}
+              </span>
+            </p>
+            <p>
+              Grading —{" "}
+              <span className="font-mono normal-case tracking-normal text-ink-soft">
+                {problem.meta.validator.kind}
+              </span>{" "}
+              over {problem.tests.length} {problem.tests.length === 1 ? "test" : "tests"}
+            </p>
+          </div>
+        </article>
+
+        {/* RIGHT — workspace */}
+        <section className="lg:col-span-7 min-w-0 animate-fade-up" style={{ animationDelay: "180ms" }}>
+          <div className="border border-rule bg-paper-deep/40">
+            {/* control strip */}
+            <div className="flex items-center border-b border-rule">
+              <LangTab active={lang === "python"} onClick={() => setLang("python")} label="Python" />
+              <LangTab
+                active={lang === "javascript"}
+                onClick={() => setLang("javascript")}
+                label="JavaScript"
+              />
+              <div className="flex-1" />
+              <button
+                onClick={onReset}
+                className="btn-tactile focus-ring px-3 py-3 text-[11px] uppercase tracking-[0.18em] text-ink-dim hover:text-rust border-l border-rule"
+              >
+                Reset
+              </button>
+              <button
+                onClick={onRun}
+                disabled={!runner.ready || running}
+                aria-busy={running}
+                className="btn-tactile focus-ring inline-flex items-center gap-2 bg-ink text-paper px-5 py-3 text-[12px] uppercase tracking-[0.2em] disabled:opacity-50 hover:bg-rust transition-colors border-l border-ink"
+              >
+                {running ? (
+                  <>
+                    <Spinner /> Running
+                  </>
+                ) : (
+                  <>
+                    <PlayMark /> Run
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* editor */}
+            <div className="bg-paper">
+              <CodeEditor value={code} language={lang} onChange={setCode} />
+            </div>
+          </div>
+
+          {/* output */}
+          <div className="mt-6">
+            <OutputPanel response={response} warming={runner.warming} />
+          </div>
+
+          {/* reveal */}
+          <div className="mt-8 pt-5 border-t border-rule text-[0.875rem]">
+            {canReveal(problem.meta.id, hadRun) ? (
+              <button
+                onClick={() => setShowSolution((v) => !v)}
+                className="focus-ring text-ink-soft hover:text-rust transition-colors inline-flex items-center gap-2"
+              >
+                <span className="text-[11px] uppercase tracking-[0.18em]">
+                  {showSolution ? "Hide" : "Reveal"} reference solution
+                </span>
+                <span aria-hidden className="text-rust">
+                  {showSolution ? "↑" : "↓"}
+                </span>
+              </button>
+            ) : (
+              <span className="text-[11px] uppercase tracking-[0.18em] text-ink-dim">
+                Reference solution unlocks after a run &amp; 60 s of work.
+              </span>
+            )}
+            {showSolution && (
+              <pre className="mt-3 text-[0.8rem] leading-relaxed whitespace-pre-wrap bg-paper-deep border-l-2 border-rust p-4 font-mono text-ink-soft">
+                {problem.solutions[lang]}
+              </pre>
+            )}
+          </div>
+
+          {allPassed && (
+            <div className="mt-6 border border-forest/40 bg-forest-soft/60 px-4 py-3 text-[0.875rem] text-forest flex items-baseline gap-3 animate-fade-up">
+              <span className="font-display italic text-lg leading-none">✓</span>
+              <span>
+                All tests pass. <span className="text-ink-dim">Saved to your local progress.</span>
+              </span>
+            </div>
           )}
-          {showSolution && (
-            <pre className="mt-2 text-xs whitespace-pre-wrap bg-gray-100 dark:bg-gray-900 p-2 rounded">
-              {problem.solutions[lang]}
-            </pre>
-          )}
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
+  );
+}
+
+function LangTab({
+  active,
+  onClick,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`btn-tactile focus-ring px-4 py-3 text-[12px] uppercase tracking-[0.2em] border-r border-rule transition-colors ${
+        active ? "text-ink bg-paper" : "text-ink-dim hover:text-ink"
+      }`}
+      aria-pressed={active}
+    >
+      <span className="relative">
+        {label}
+        {active && (
+          <span aria-hidden className="absolute -bottom-3 left-0 right-0 h-[2px] bg-rust" />
+        )}
+      </span>
+    </button>
+  );
+}
+
+function PlayMark() {
+  return (
+    <svg width="9" height="11" viewBox="0 0 9 11" aria-hidden>
+      <path d="M0 0 L9 5.5 L0 11 Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+function Spinner() {
+  return (
+    <span
+      aria-hidden
+      className="inline-block w-3 h-3 border-2 border-paper/40 border-t-paper rounded-full animate-spin"
+    />
   );
 }

@@ -1,5 +1,186 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-:root { color-scheme: light dark; }
-html, body { height: 100%; }
+
+:root {
+  color-scheme: light;
+  --grain-opacity: 0.04;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  /* Subtle paper grain — a tiny SVG noise texture layered over the paper color. */
+  background-color: #f4f0e6;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(23, 20, 17, var(--grain-opacity)) 1px, transparent 0);
+  background-size: 3px 3px;
+}
+
+::selection {
+  background-color: #e9d2c0;
+  color: #171411;
+}
+
+/* Editorial prose treatment for problem statements. */
+.editorial {
+  color: #3a332b;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.editorial h1 {
+  font-family: var(--font-display);
+  color: #171411;
+  font-weight: 500;
+  font-size: clamp(1.875rem, 4vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+  font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 0;
+}
+.editorial h2 {
+  font-family: var(--font-display);
+  color: #171411;
+  font-weight: 500;
+  font-style: italic;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  font-variation-settings: "opsz" 24, "SOFT" 40, "WONK" 1;
+}
+.editorial h3 {
+  font-family: var(--font-body);
+  color: #171411;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.editorial p {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.editorial p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 3rem;
+  line-height: 0.85;
+  float: left;
+  margin-right: 0.5rem;
+  margin-top: 0.25rem;
+  color: #a8421b;
+  font-variation-settings: "opsz" 144, "WONK" 1;
+}
+.editorial code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background-color: rgba(168, 66, 27, 0.08);
+  color: #7a2f12;
+  padding: 0.08rem 0.35rem;
+  border-radius: 2px;
+}
+.editorial pre,
+.editorial pre code {
+  font-family: var(--font-mono);
+  background-color: transparent;
+  color: #171411;
+  padding: 0;
+}
+.editorial pre {
+  background-color: #eae3d2;
+  border-left: 2px solid #a8421b;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre;
+}
+.editorial ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5rem 0;
+}
+.editorial ul li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin: 0.25rem 0;
+}
+.editorial ul li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: #a8421b;
+  font-weight: 600;
+}
+.editorial strong {
+  font-weight: 600;
+  color: #171411;
+}
+.editorial a {
+  color: #a8421b;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.editorial blockquote {
+  border-left: 2px solid #d5cdb8;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: #7a6f60;
+}
+.editorial hr {
+  border: 0;
+  border-top: 1px solid #d5cdb8;
+  margin: 2rem 0;
+}
+
+/* Tactile button base used by Run, language tabs, etc. */
+.btn-tactile {
+  position: relative;
+  font-family: var(--font-body);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: transform 80ms ease, box-shadow 80ms ease, background-color 120ms ease, color 120ms ease;
+}
+.btn-tactile:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/* Focus ring used everywhere. */
+.focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: outline-color 80ms ease;
+}
+.focus-ring:focus-visible {
+  outline-color: #a8421b;
+}
+
+/* Marker style for problem numbers. */
+.marker-num {
+  font-family: var(--font-display);
+  font-feature-settings: "lnum", "tnum";
+  font-variation-settings: "opsz" 8, "SOFT" 0, "WONK" 0;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+}
+
+/* CodeMirror chrome overrides (light theme baseline; component sets the rest). */
+.cm-theme {
+  font-family: var(--font-mono);
+}
