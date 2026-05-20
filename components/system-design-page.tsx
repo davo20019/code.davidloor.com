@@ -41,7 +41,7 @@ export function SystemDesignPage({ problem }: { problem: SystemDesignProblem }) 
         placeholder="Your notes..."
         className="w-full h-64 p-3 border rounded font-mono text-sm dark:bg-gray-900 dark:border-gray-700"
       />
-      <button onClick={() => setShow((s) => !s)} className="text-sm underline">
+      <button onClick={() => setShow((s) => !s)} className="text-sm underline focus:outline focus:outline-2 focus:outline-blue-600 focus-visible:outline">
         {show ? "Hide" : "Reveal"} reference talking points
       </button>
       {show && (

@@ -53,17 +53,17 @@ export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
         <h1>{problem.meta.title}</h1>
         <div dangerouslySetInnerHTML={{ __html: html }} />
       </article>
-      <section className="space-y-3">
+      <section className="space-y-3 min-w-0 overflow-auto">
         <div className="flex gap-2 items-center">
-          <button onClick={() => setLang("python")} className={`px-3 py-1 rounded ${lang === "python" ? "bg-black text-white" : "bg-gray-200 dark:bg-gray-800"}`}>Python</button>
-          <button onClick={() => setLang("javascript")} className={`px-3 py-1 rounded ${lang === "javascript" ? "bg-black text-white" : "bg-gray-200 dark:bg-gray-800"}`}>JavaScript</button>
-          <button onClick={onRun} disabled={!runner.ready} className="ml-auto px-3 py-1 rounded bg-green-600 text-white disabled:opacity-50">Run</button>
+          <button onClick={() => setLang("python")} className={`px-3 py-1 rounded focus:outline focus:outline-2 focus:outline-blue-600 focus-visible:outline ${lang === "python" ? "bg-black text-white" : "bg-gray-200 dark:bg-gray-800"}`}>Python</button>
+          <button onClick={() => setLang("javascript")} className={`px-3 py-1 rounded focus:outline focus:outline-2 focus:outline-blue-600 focus-visible:outline ${lang === "javascript" ? "bg-black text-white" : "bg-gray-200 dark:bg-gray-800"}`}>JavaScript</button>
+          <button onClick={onRun} disabled={!runner.ready} className="ml-auto px-3 py-1 rounded bg-green-600 text-white disabled:opacity-50 focus:outline focus:outline-2 focus:outline-blue-600 focus-visible:outline">Run</button>
         </div>
         <CodeEditor value={code} language={lang} onChange={setCode} />
         <OutputPanel response={response} warming={runner.warming} />
         <div className="text-sm">
           {canReveal(problem.meta.id, hadRun) ? (
-            <button onClick={() => setShowSolution((v) => !v)} className="underline">
+            <button onClick={() => setShowSolution((v) => !v)} className="underline focus:outline focus:outline-2 focus:outline-blue-600 focus-visible:outline">
               {showSolution ? "Hide" : "Reveal"} reference solution
             </button>
           ) : (
