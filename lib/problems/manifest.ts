@@ -638,6 +638,74 @@ export const problems: Problem[] = [
     ]
   },
   {
+    "type": "coding",
+    "meta": {
+      "id": "008-climbing-stairs",
+      "title": "Climbing Stairs",
+      "difficulty": "easy",
+      "tags": [
+        "dynamic-programming",
+        "math",
+        "memoization"
+      ],
+      "topics": [
+        "dynamic-programming"
+      ],
+      "entry": "climbStairs",
+      "signature": {
+        "params": [
+          "int"
+        ],
+        "returns": "int"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Climbing Stairs\n\nYou are climbing a staircase with `n` steps. Each time you can either climb 1 or 2 steps. Return the number of distinct ways you can climb to the top.\n\n## Example\n\nInput: `n = 2` → Output: `2`\nExplanation: Two ways: (1 step + 1 step) or (2 steps).\n\nInput: `n = 3` → Output: `3`\nExplanation: Three ways: (1+1+1), (1+2), (2+1).\n\nInput: `n = 5` → Output: `8`\n\n## Constraints\n- 1 ≤ n ≤ 45\n",
+    "starters": {
+      "python": "def climbStairs(n):\n    # Return the number of distinct ways to climb n stairs.\n    pass\n",
+      "javascript": "function climbStairs(n) {\n  // Return the number of distinct ways to climb n stairs.\n}\n"
+    },
+    "solutions": {
+      "python": "def climbStairs(n):\n    a, b = 1, 1\n    for _ in range(n): a, b = b, a + b\n    return a\n",
+      "javascript": "function climbStairs(n) { let a = 1, b = 1; for (let i = 0; i < n; i++) [a, b] = [b, a + b]; return a; }\n"
+    },
+    "tests": [
+      {
+        "input": [
+          1
+        ],
+        "expected": 1
+      },
+      {
+        "input": [
+          2
+        ],
+        "expected": 2
+      },
+      {
+        "input": [
+          3
+        ],
+        "expected": 3
+      },
+      {
+        "input": [
+          5
+        ],
+        "expected": 8
+      },
+      {
+        "input": [
+          10
+        ],
+        "expected": 89
+      }
+    ]
+  },
+  {
     "type": "system_design",
     "meta": {
       "id": "001-design-url-shortener",
