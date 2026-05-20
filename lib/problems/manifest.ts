@@ -86,6 +86,73 @@ export const problems: Problem[] = [
     ]
   },
   {
+    "type": "coding",
+    "meta": {
+      "id": "002-valid-parentheses",
+      "title": "Valid Parentheses",
+      "difficulty": "easy",
+      "tags": [
+        "stack",
+        "string"
+      ],
+      "topics": [
+        "stack"
+      ],
+      "entry": "isValid",
+      "signature": {
+        "params": [
+          "string"
+        ],
+        "returns": "bool"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Valid Parentheses\n\nGiven a string `s` containing only the characters `(`, `)`, `{`, `}`, `[`, and `]`, determine if the string is valid. A string is valid if every open bracket is closed by the same type of bracket, and brackets are closed in the correct order. An empty string is considered valid.\n\n## Example\n\nInput: `s = \"()[]{}\"` → Output: `true`\nInput: `s = \"(]\"` → Output: `false`\nInput: `s = \"([)]\"` → Output: `false`\nInput: `s = \"{[]}\"` → Output: `true`\n\n## Constraints\n- 1 ≤ s.length ≤ 10⁴\n- `s` consists of parentheses characters only: `()[]{}`.\n",
+    "starters": {
+      "python": "def isValid(s):\n    # Return True if the bracket string is valid, False otherwise.\n    pass\n",
+      "javascript": "function isValid(s) {\n  // Return true if the bracket string is valid, false otherwise.\n}\n"
+    },
+    "solutions": {
+      "python": "def isValid(s):\n    pairs = {')': '(', ']': '[', '}': '{'}\n    stack = []\n    for c in s:\n        if c in pairs:\n            if not stack or stack.pop() != pairs[c]: return False\n        else:\n            stack.append(c)\n    return not stack\n",
+      "javascript": "function isValid(s) {\n  const pairs = { ')': '(', ']': '[', '}': '{' };\n  const stack = [];\n  for (const c of s) {\n    if (c in pairs) {\n      if (!stack.length || stack.pop() !== pairs[c]) return false;\n    } else stack.push(c);\n  }\n  return stack.length === 0;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          "()[]{}"
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          "(]"
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          "([)]"
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          "{[]}"
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          ""
+        ],
+        "expected": true
+      }
+    ]
+  },
+  {
     "type": "system_design",
     "meta": {
       "id": "001-design-url-shortener",
