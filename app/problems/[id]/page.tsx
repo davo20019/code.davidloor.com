@@ -9,8 +9,9 @@ export function generateStaticParams() {
   return getAll().map((p) => ({ id: p.meta.id }));
 }
 
-export default function ProblemPage({ params }: { params: { id: string } }) {
-  const p = getById(params.id);
+export default async function ProblemPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const p = getById(id);
   if (!p) return notFound();
   if (p.type === "coding") return <CodingProblemPage problem={p} />;
   return <SystemDesignPage problem={p} />;
