@@ -23,9 +23,37 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata = {
-  title: "code.davidloor.com — interview problems",
+  metadataBase: new URL("https://code.davidloor.com"),
+  title: {
+    default: "code.davidloor.com — interview problems",
+    template: "%s · code.davidloor.com",
+  },
   description:
-    "A small studio of coding and system-design problems. Python and JavaScript, in your browser.",
+    "A small studio of coding and system-design problems. Python and JavaScript, graded entirely in your browser. Open source, MIT.",
+  authors: [{ name: "David Loor" }],
+  keywords: [
+    "coding interview",
+    "system design",
+    "python practice",
+    "javascript practice",
+    "leetcode alternative",
+    "pyodide",
+    "open source",
+  ],
+  openGraph: {
+    type: "website",
+    url: "https://code.davidloor.com",
+    title: "code.davidloor.com — interview problems",
+    description:
+      "Twenty coding problems and seven system-design prompts. Python and JavaScript, graded in your browser. No servers, no accounts.",
+    siteName: "code.davidloor.com",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "code.davidloor.com — interview problems",
+    description:
+      "Twenty coding problems and seven system-design prompts. Python and JavaScript, graded in your browser.",
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

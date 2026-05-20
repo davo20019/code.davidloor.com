@@ -50,7 +50,9 @@ export function RunnerProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const iframeUrl = `${RUNNER_ORIGIN}/runner.html?parent=${encodeURIComponent(typeof window !== "undefined" ? window.location.origin : "")}`;
+  // Use the extension-less URL because Cloudflare Workers Static Assets
+  // strips ".html" and 307-redirects, which adds a needless round-trip.
+  const iframeUrl = `${RUNNER_ORIGIN}/runner?parent=${encodeURIComponent(typeof window !== "undefined" ? window.location.origin : "")}`;
 
   return (
     <RunnerCtx.Provider value={{ run, ready, warming }}>

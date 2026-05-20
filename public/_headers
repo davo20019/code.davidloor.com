@@ -3,3 +3,18 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer
   Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+# The Next.js dynamic icon and OG image route handlers write extensionless
+# files at /icon and /opengraph-image. Force the right content type so
+# browsers and social cards recognize them.
+/icon
+  Content-Type: image/png
+  Cache-Control: public, max-age=86400
+
+/opengraph-image
+  Content-Type: image/png
+  Cache-Control: public, max-age=86400
+
+/twitter-image
+  Content-Type: image/png
+  Cache-Control: public, max-age=86400
