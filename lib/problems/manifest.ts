@@ -897,6 +897,156 @@ export const problems: Problem[] = [
     ]
   },
   {
+    "type": "coding",
+    "meta": {
+      "id": "011-number-of-islands",
+      "title": "Number of Islands",
+      "difficulty": "medium",
+      "tags": [
+        "array",
+        "depth-first-search",
+        "breadth-first-search",
+        "union-find",
+        "matrix"
+      ],
+      "topics": [
+        "graph",
+        "dfs",
+        "matrix"
+      ],
+      "entry": "numIslands",
+      "signature": {
+        "params": [
+          {
+            "grid": "string"
+          }
+        ],
+        "returns": "int"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Number of Islands\n\nGiven an `m x n` 2D grid of characters `\"1\"` (land) and `\"0\"` (water), return the number of islands. An island is surrounded by water and is formed by connecting adjacent land cells horizontally or vertically. You may assume all four edges of the grid are surrounded by water.\n\n## Example\n\nInput:\n```\ngrid = [\n  [\"1\",\"1\",\"0\"],\n  [\"1\",\"0\",\"0\"],\n  [\"0\",\"0\",\"1\"]\n]\n```\nOutput: `2`\n\nInput:\n```\ngrid = [\n  [\"1\",\"1\",\"1\",\"1\",\"0\"],\n  [\"1\",\"1\",\"0\",\"1\",\"0\"],\n  [\"1\",\"1\",\"0\",\"0\",\"0\"],\n  [\"0\",\"0\",\"0\",\"0\",\"0\"]\n]\n```\nOutput: `1`\n\n## Constraints\n- `m == grid.length`, `n == grid[i].length`\n- 1 ≤ m, n ≤ 300\n- `grid[i][j]` is `\"0\"` or `\"1\"` (string characters, not integers).\n",
+    "starters": {
+      "python": "def numIslands(grid):\n    # Return the number of islands in the grid.\n    # grid is a 2D list of strings \"1\" (land) and \"0\" (water).\n    pass\n",
+      "javascript": "function numIslands(grid) {\n  // Return the number of islands in the grid.\n  // grid is a 2D array of strings \"1\" (land) and \"0\" (water).\n}\n"
+    },
+    "solutions": {
+      "python": "def numIslands(grid):\n    if not grid: return 0\n    rows, cols = len(grid), len(grid[0]); seen = set(); count = 0\n    def dfs(r, c):\n        if (r, c) in seen or r < 0 or c < 0 or r >= rows or c >= cols or grid[r][c] != \"1\": return\n        seen.add((r, c))\n        dfs(r+1, c); dfs(r-1, c); dfs(r, c+1); dfs(r, c-1)\n    for r in range(rows):\n        for c in range(cols):\n            if grid[r][c] == \"1\" and (r, c) not in seen:\n                count += 1; dfs(r, c)\n    return count\n",
+      "javascript": "function numIslands(grid) {\n  if (!grid.length) return 0;\n  const rows = grid.length, cols = grid[0].length; const seen = new Set(); let count = 0;\n  const dfs = (r, c) => {\n    const k = `${r},${c}`;\n    if (seen.has(k) || r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] !== \"1\") return;\n    seen.add(k); dfs(r+1, c); dfs(r-1, c); dfs(r, c+1); dfs(r, c-1);\n  };\n  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++)\n    if (grid[r][c] === \"1\" && !seen.has(`${r},${c}`)) { count++; dfs(r, c); }\n  return count;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          [
+            [
+              "1",
+              "1",
+              "0"
+            ],
+            [
+              "1",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "1"
+            ]
+          ]
+        ],
+        "expected": 2
+      },
+      {
+        "input": [
+          [
+            [
+              "1",
+              "1",
+              "1",
+              "1",
+              "0"
+            ],
+            [
+              "1",
+              "1",
+              "0",
+              "1",
+              "0"
+            ],
+            [
+              "1",
+              "1",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ]
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "input": [
+          [
+            [
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0"
+            ]
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "input": [
+          [
+            [
+              "1"
+            ]
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "input": [
+          [
+            [
+              "1",
+              "0",
+              "1"
+            ],
+            [
+              "0",
+              "1",
+              "0"
+            ],
+            [
+              "1",
+              "0",
+              "1"
+            ]
+          ]
+        ],
+        "expected": 5
+      }
+    ]
+  },
+  {
     "type": "system_design",
     "meta": {
       "id": "001-design-url-shortener",
