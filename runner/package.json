@@ -1,0 +1,15 @@
+{
+  "name": "code-davidloor-runner",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs",
+    "deploy": "npm run build && wrangler deploy",
+    "install-pyodide": "node scripts/install-pyodide.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "wrangler": "^3.80.0",
+    "tar": "^7.4.0"
+  }
+}
