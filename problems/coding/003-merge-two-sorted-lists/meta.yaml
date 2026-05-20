@@ -1,0 +1,12 @@
+title: Merge Two Sorted Lists
+difficulty: easy
+tags: [linked-list, recursion]
+topics: [linked-list]
+entry: mergeTwoLists
+signature:
+  params:
+    - { linked_list: int }
+    - { linked_list: int }
+  returns: { linked_list: int }
+validator: { kind: linked_list_value_equal }
+timeLimitMs: 5000

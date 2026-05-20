@@ -153,6 +153,126 @@ export const problems: Problem[] = [
     ]
   },
   {
+    "type": "coding",
+    "meta": {
+      "id": "003-merge-two-sorted-lists",
+      "title": "Merge Two Sorted Lists",
+      "difficulty": "easy",
+      "tags": [
+        "linked-list",
+        "recursion"
+      ],
+      "topics": [
+        "linked-list"
+      ],
+      "entry": "mergeTwoLists",
+      "signature": {
+        "params": [
+          {
+            "linked_list": "int"
+          },
+          {
+            "linked_list": "int"
+          }
+        ],
+        "returns": {
+          "linked_list": "int"
+        }
+      },
+      "validator": {
+        "kind": "linked_list_value_equal"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Merge Two Sorted Lists\n\nYou are given the heads of two sorted linked lists `list1` and `list2`. Merge the two lists into one sorted linked list by splicing together the nodes of the input lists. Return the head of the merged linked list.\n\n## Example\n\nInput: `list1 = [1,2,4]`, `list2 = [1,3,4]`\nOutput: `[1,1,2,3,4,4]`\n\nInput: `list1 = []`, `list2 = []`\nOutput: `[]`\n\nInput: `list1 = []`, `list2 = [0]`\nOutput: `[0]`\n\n## Constraints\n- The number of nodes in each list is in the range `[0, 50]`.\n- -100 ≤ Node.val ≤ 100\n- Both `list1` and `list2` are sorted in non-decreasing order.\n",
+    "starters": {
+      "python": "def mergeTwoLists(l1, l2):\n    # Merge two sorted linked lists and return the head of the merged list.\n    # ListNode is available in scope (injected by the harness).\n    pass\n",
+      "javascript": "function mergeTwoLists(l1, l2) {\n  // Merge two sorted linked lists and return the head of the merged list.\n  // ListNode is available in scope (injected by the harness).\n}\n"
+    },
+    "solutions": {
+      "python": "def mergeTwoLists(l1, l2):\n    dummy = ListNode(0); cur = dummy\n    while l1 and l2:\n        if l1.val <= l2.val: cur.next = l1; l1 = l1.next\n        else: cur.next = l2; l2 = l2.next\n        cur = cur.next\n    cur.next = l1 or l2\n    return dummy.next\n",
+      "javascript": "function mergeTwoLists(l1, l2) {\n  const dummy = new ListNode(0); let cur = dummy;\n  while (l1 && l2) {\n    if (l1.val <= l2.val) { cur.next = l1; l1 = l1.next; }\n    else { cur.next = l2; l2 = l2.next; }\n    cur = cur.next;\n  }\n  cur.next = l1 || l2;\n  return dummy.next;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            1,
+            3,
+            4
+          ]
+        ],
+        "expected": [
+          1,
+          1,
+          2,
+          3,
+          4,
+          4
+        ]
+      },
+      {
+        "input": [
+          [],
+          []
+        ],
+        "expected": []
+      },
+      {
+        "input": [
+          [],
+          [
+            0
+          ]
+        ],
+        "expected": [
+          0
+        ]
+      },
+      {
+        "input": [
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "expected": [
+          1,
+          2
+        ]
+      },
+      {
+        "input": [
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            2,
+            4,
+            6
+          ]
+        ],
+        "expected": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      }
+    ]
+  },
+  {
     "type": "system_design",
     "meta": {
       "id": "001-design-url-shortener",
