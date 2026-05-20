@@ -32,13 +32,17 @@ An open-source coding interview prep platform at `code.davidloor.com`. The autho
                                         ▼
                     runner.code.davidloor.com (sandbox subdomain)
                          ┌─────────────────────────────┐
-                         │ Static HTML hosting a       │
-                         │ Web Worker:                 │
-                         │  - Pyodide (Python)         │
-                         │  - JS runtime               │
-                         │  - In-frame wall-clock      │
-                         │    timeout enforcement      │
-                         │  - connect-src 'self' CSP   │
+                         │ Static HTML hosting two     │
+                         │ Web Workers (per language): │
+                         │  - python-worker.js         │
+                         │    (Pyodide, warm cache)    │
+                         │  - js-worker.js             │
+                         │  Each worker:               │
+                         │   - frozen network APIs     │
+                         │   - in-frame wall-clock     │
+                         │     timeout, respawn-only-  │
+                         │     affected-worker         │
+                         │   - connect-src 'self' CSP  │
                          └─────────────────────────────┘
 ```
 
@@ -46,12 +50,12 @@ The runner subdomain is the security boundary. All user code executes inside an 
 
 ## Stack
 
-- **Framework:** Next.js 16 App Router.
-- **Host:** Cloudflare Workers via `@opennextjs/cloudflare`.
-  - Requires `compatibility_flags = ["nodejs_compat"]` in `wrangler.toml`.
-  - Requires `compatibility_date >= "2024-09-23"`.
-  - Verify Worker bundle size against the active Cloudflare plan. Keep Pyodide and Monaco assets **out** of the Worker bundle; serve them as static assets via Workers Static Assets binding so only the Next.js server code counts against the Worker script limit.
-- **Editor:** Monaco.
+- **Framework:** Next.js 16 App Router with **`output: 'export'`** (full static export).
+- **Host:** Cloudflare **Workers Static Assets** (the unified Workers + assets model, which is what Pages is converging into). No OpenNext, no SSR layer for v1.
+  - Rationale: v1 has no server-side rendering, no database, no auth, no API routes. Static export removes the OpenNext compatibility surface entirely and matches the user-stated "Workers, not Pages" preference via the modern Static Assets binding.
+  - Trade-off accepted: no Next.js middleware available, so per-request CSP nonces are not possible without a separate Worker in front. v1 falls back to `script-src 'self' 'unsafe-inline'` for the main app (acceptable: no user-generated HTML; problem Markdown is sanitized via DOMPurify). v1.1 hardening path: a thin CF Worker in front using HTMLRewriter to inject per-request nonces and tighten the CSP.
+  - Verify Worker bundle size against the active Cloudflare plan. Pyodide and CodeMirror assets are served as static assets; nothing user-runtime-related is in a Worker script.
+- **Editor:** **CodeMirror 6**. ~150-300 KB, modular, excellent touch/mobile support (the platform should be usable from an iPad). Monaco rejected for v1 due to size (~4-5 MB), mobile-input bugs, and harder CSP story (relies on workers loaded via blob in some setups).
 - **UI:** Tailwind + shadcn/ui.
 - **Python runtime:** Pyodide (CPython 3.12 on WebAssembly), bundled as static assets on the runner subdomain.
 - **JS runtime:** Dynamic JS evaluation inside a Web Worker (see Execution model).
@@ -76,13 +80,12 @@ Two boundaries combine to contain user-submitted code:
 
 **Main app (`code.davidloor.com`):**
 
-Next.js App Router emits inline hydration scripts, so a strict CSP requires a **per-request nonce** set in middleware and threaded onto every framework-rendered `<script>` tag (this is the official Next.js pattern). Monaco loads syntax workers, so `worker-src 'self' blob:` is required.
+Static export means no middleware → no per-request nonces in v1. Accepted weakening:
 
 ```
 default-src 'self';
-script-src  'self' 'nonce-<per-request>' 'strict-dynamic';
+script-src  'self' 'unsafe-inline';                 # Next.js static export hydration
 style-src   'self' 'unsafe-inline';                 # Tailwind / shadcn runtime styles
-worker-src  'self' blob:;                           # Monaco workers
 img-src     'self' data:;
 frame-src   https://runner.code.davidloor.com;
 connect-src 'self';
@@ -90,7 +93,7 @@ base-uri    'none';
 form-action 'self';
 ```
 
-If nonce-based CSP proves flaky on OpenNext during implementation, fallback is `script-src 'self' 'unsafe-inline'` — documented as a known weakening and revisited before going public.
+Why this is acceptable in v1: the main app renders no user-generated HTML; problem Markdown is sanitized via DOMPurify; no third-party scripts. `'unsafe-inline'` matters only in the presence of an injection vector, and there isn't one. Hardening path (v1.1): place a small CF Worker in front of the static assets that uses HTMLRewriter to inject per-request nonces and remove `'unsafe-inline'`. CodeMirror 6 does not require a `worker-src` entry (it ships no workers by default).
 
 **Runner subdomain (`runner.code.davidloor.com`):**
 
@@ -114,7 +117,30 @@ form-action 'none';
 - The runner Worker (Cloudflare Worker, not Web Worker) returns 404 for any path not in an explicit static allowlist. Application code ignores query strings and performs no app-level request logging.
 - Cloudflare platform logs on the runner subdomain are minimized in project settings and treated as sensitive: not exported to third-party analytics. Platform logs that remain are out of application control and assumed to contain request paths.
 
+**Cookie policy** (project-wide, applies to all of `davidloor.com`):
+
+- **Never** set a non-`HttpOnly` cookie with `Domain=.davidloor.com`. Wildcard cookies with `Domain` set are readable from any subdomain via `document.cookie`, and the runner subdomain runs scripts with `allow-same-origin` for IDB caching.
+- All main-app cookies are host-only (no `Domain` attribute) and `HttpOnly` whenever they carry session/auth material.
+- This is a soft policy in v1 (no auth yet) and a hard policy when v2 introduces sessions.
+
 The runner has no cookies, no third-party scripts, and serves no HTML to humans — only the iframe.
+
+**Defense-in-depth: freeze network APIs in the Web Worker.** CSP and origin isolation prevent off-domain exfiltration but do not prevent same-origin exfiltration into runner-origin platform logs. Before user code executes, the runner Web Worker permanently deletes/freezes its networking surface:
+
+```js
+// runner-worker.js — runs after Pyodide finishes booting and before any user code
+for (const name of [
+  "fetch", "XMLHttpRequest", "WebSocket", "EventSource",
+  "Worker", "SharedWorker", "BroadcastChannel",
+  "importScripts", "navigator.sendBeacon", "WebTransport",
+]) {
+  // Use Object.defineProperty with writable:false, configurable:false on self
+  // (and on navigator where applicable). Pseudocode here; full impl in plan.
+}
+Object.freeze(self.navigator);
+```
+
+After this step, neither user code nor a malicious test data structure can initiate any network request. The Cloudflare access log channel is closed by construction, not just by policy.
 
 ## Execution model
 
@@ -149,38 +175,71 @@ type ProblemSpec = {
 };
 ```
 
-The runner Worker:
+### Two separate Web Workers (one per language)
 
-1. Loads Pyodide once (warm on first run), or initializes the JS Worker scope.
-2. For each test case:
-   - Deserializes typed inputs (e.g., `linked_list<int> [1,2,3]` → linked-list nodes in the target language).
-   - Invokes the user's entry function with deserialized arguments.
-   - Captures stdout, exceptions, and elapsed time.
-   - Serializes the return value.
-   - Runs the declared `validator` to compare actual vs expected.
-3. Replies with a `result` message: per-test pass/fail, captured stdout, error messages, runtime.
+The iframe owns **two** Web Workers — `python-worker.js` and `js-worker.js` — both static assets on the runner origin. Reasons:
+
+- A JS-side runaway terminating its worker must not destroy the Pyodide instance (1-3 second cold start to rehydrate).
+- Each language gets a clean global scope tailored to its needs (Pyodide bootstrap vs. plain Worker).
+- Both workers freeze their network APIs as described above; the freezing logic is per-runtime.
+
+Per-worker flow:
+
+1. **`python-worker.js`** boots Pyodide once (cached after first load via runner-origin IndexedDB), then waits for `run` messages.
+2. **`js-worker.js`** is idle until a `run` arrives.
+3. For each test case in a run:
+   - Deserialize typed inputs into language-native values (e.g., `linked_list<int> [1,2,3]` → a chain of `ListNode` in Python, equivalent class in JS).
+   - Invoke the user's entry function with deserialized arguments.
+   - Capture stdout, exceptions, elapsed time.
+   - **Serialize the return value to JSON-safe primitives inside the runtime** (see Pyodide proxy lifecycle below).
+   - Run the declared `validator` to compare actual vs expected.
+4. Reply with a `result` message: per-test pass/fail, captured stdout, error messages, runtime.
+
+### JS scope isolation
+
+User JS code is wrapped via the `Function` constructor (allowed by the runner CSP's `'unsafe-eval'`) so it executes in **global scope only** — never inside the harness's lexical scope. This prevents user code from reading or overwriting harness locals like `tests`, `expected`, or `validator`. Pseudocode:
+
+```js
+// Inside js-worker.js, after network APIs are frozen:
+const userFn = new Function("args", `${userCode}\nreturn ${entry}.apply(null, args);`);
+const out = userFn(deserializedArgs);
+```
+
+Harness state lives in block-scoped `const`/`let` inside the worker module and is **never** attached to `self`.
+
+### Pyodide proxy lifecycle
+
+Returning non-primitive Python objects (custom `ListNode`, `TreeNode`, etc.) to JS would create `PyProxy` objects that require explicit `.destroy()` to free WASM heap memory. **All serialization happens inside Python before the boundary.** Concretely:
+
+- The Python harness converts custom types to JSON-native structures (e.g., a `ListNode` chain → `[1,2,3]`) using per-type Python helpers.
+- The harness returns only `dict`/`list`/`str`/`int`/`float`/`bool`/`None`, which Pyodide auto-converts to plain JS values with no proxies.
+- The JS validator never traverses `PyProxy` instances.
+
+This eliminates a known long-session memory-leak class entirely.
 
 ### Timeout and worker lifecycle
 
-- The **runner iframe owns the Worker** and enforces the wall-clock timeout via its own `setTimeout`. On overrun the iframe terminates the Worker and returns a `result` with `timed_out: true`.
-- The **main app** does not own the Worker. It can:
+- Each iframe-owned Worker enforces its own wall-clock timeout (5s default) via `setTimeout`. On overrun the iframe terminates **only the affected worker** and respawns it. A JS timeout never affects the Python worker, and vice versa.
+- The **main app** does not own the workers. It can:
   - Send a `cancel` postMessage (cooperative).
-  - Apply a longer safety timeout (e.g., 8s) and **detach the iframe** as a hard escalation, recreating it on the next run.
-- On a fresh worker boot, Pyodide reloads from the runner-origin IndexedDB cache; first-ever load is from runner-origin static assets.
+  - Apply an 8s safety timeout and **detach the iframe** as a hard escalation, recreating it on the next run.
+- On respawn after a Python timeout, Pyodide reloads from runner-origin IndexedDB cache (cold path ~0.5s); first-ever load is from runner-origin static assets (~1-3s). The UI shows a "Resetting Python engine…" indicator during this window so the user knows the next run is recovering rather than slow.
 
 ### Built-in validators
 
 Each validator is implemented once in the app repo (not per problem):
 
-| Validator | Use |
-|---|---|
-| `exact` | Strict deep-equal of primitives or ordered lists (order matters). |
-| `set` | Flat list compared as a multiset (outer order doesn't matter). |
-| `set_of_lists` | Outer collection unordered; inner lists ordered (e.g., a list of paths where path order within each path matters). |
-| `set_of_sets` | Outer and inner both unordered (canonical 3Sum: any triplet order, any output order). |
-| `any_of` | Multiple acceptable answers explicitly listed in the test case. |
-| `linked_list_value_equal` | Compare linked-list outputs by value sequence, regardless of node identity. |
-| `tree_isomorphic` | Compare BST/binary-tree outputs structurally. |
+| Validator | Use | Implementation |
+|---|---|---|
+| `exact` | Strict deep-equal of primitives or ordered lists (order matters). | Recursive structural equality. |
+| `set` | Flat list compared as a multiset (outer order doesn't matter). | Sort both arrays, compare element-by-element. |
+| `set_of_lists` | Outer collection unordered; inner lists ordered. | `JSON.stringify` each inner list → sort the resulting array of strings → compare. |
+| `set_of_sets` | Outer and inner both unordered (canonical 3Sum: any triplet order, any output order). | Sort each inner list → `JSON.stringify` each → sort the array of strings → compare. |
+| `any_of` | Multiple acceptable answers explicitly listed in the test case. | Test passes if `actual` matches **any** of `expected[]` under `exact`. |
+| `linked_list_value_equal` | Compare linked-list outputs by value sequence. | After Python-side serialization to a plain array, falls through to `exact`. |
+| `tree_isomorphic` | Compare BST/binary-tree outputs structurally. | After Python-side BFS-array serialization, falls through to `exact`. |
+
+The canonical-sort approach makes set-based validation deterministic and trivial to audit, avoiding any need for graph/set isomorphism logic. It assumes test inputs are JSON-serializable primitives, which holds for every problem in the v1 set.
 
 If a problem ever needs a custom validator (rare), it adds an entry to a fixed allowlist in the repo; the runner code change is reviewed and bundled into the trusted harness. Problems still ship no executable code.
 
@@ -246,8 +305,8 @@ URL Shortener, Rate Limiter, News Feed, Chat App, Distributed Cache, Web Crawler
 ### Coding problem page
 - Split layout: statement (left) / Monaco editor (right) / output panel (bottom).
 - Language tab (Python | JS). Switching swaps starter code; user code is autosaved per `(problem, language)` in IndexedDB.
-- "Run" sends current code + problem spec to the runner iframe; results stream into the output panel with per-test status, stdout, error messages, runtime.
-- "Reveal solution" gated on at least one run attempt **and** ≥ 60s elapsed since the page first loaded; a one-line warning appears before the reveal.
+- "Run" sends current code + problem spec to the runner iframe; results stream into the output panel with per-test status, stdout, error messages, runtime. If the Python worker is reloading after a prior timeout, the panel shows "Resetting Python engine…" until the worker reports ready.
+- "Reveal solution" gated on at least one run attempt **and** ≥ 60s elapsed since `sessionStorage[`code-start-<problemId>`]` (set on first load of the problem). Storing the start timestamp in `sessionStorage` survives page refresh within the same tab, so the gate can't be reset by reload. A one-line warning appears before the reveal.
 - "Mark complete" stores progress locally.
 
 ### System design problem page
@@ -264,9 +323,14 @@ URL Shortener, Rate Limiter, News Feed, Chat App, Distributed Cache, Web Crawler
 
 | Risk | Mitigation |
 |---|---|
-| Malicious problem PR exfiltrates user state | (1) Problems ship no executable code. (2) Runner is on a separate origin under a strict CSP. |
-| Exfiltration via fetch from sandbox | `connect-src 'self'` on runner; Pyodide assets self-hosted under the runner origin. No external endpoints reachable. |
-| Infinite loop in user code | Iframe-owned Web Worker with 5s wall-clock timeout; iframe terminates the Worker. Main app applies an 8s safety timeout and detaches the iframe as escalation. |
+| Malicious problem PR exfiltrates user state | (1) Problems ship no executable code (data only). (2) Runner is on a separate origin. (3) Network APIs frozen in Worker before user code runs. |
+| Exfiltration via external `fetch` from sandbox | `connect-src 'self'` on runner. |
+| Exfiltration to runner-origin platform logs | Network APIs (`fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`, `Worker`, `importScripts`, `sendBeacon`, etc.) are deleted/frozen in the Web Worker after Pyodide boot, before user code runs. Same-origin requests cannot be initiated. |
+| Wildcard-cookie leak from sibling subdomain | Project policy: no non-`HttpOnly` cookies with `Domain=.davidloor.com`. Main-app cookies are host-only. |
+| User code reads/writes harness state via scope chain | JS user code compiled via `Function` constructor → executes in global scope only. Harness state is block-scoped and not attached to `self`. |
+| Pyodide JS-proxy WASM memory leak | All Python returns serialized to JSON-native types inside Python before crossing the boundary. JS never holds `PyProxy` references. |
+| Infinite loop in user code | Iframe-owned Web Worker with 5s wall-clock timeout; iframe terminates only the affected worker (Python or JS) and respawns it. Main app's 8s safety timeout detaches the iframe as escalation. |
+| Cold-start UX after a Python timeout | UI indicator "Resetting Python engine…"; Pyodide warm-loads from runner-origin IndexedDB cache. |
 | XSS via problem Markdown | Sanitize all problem Markdown with DOMPurify; never set raw HTML. |
 | Pyodide / WASM sandbox escape | Out of scope: browser-vendor sandbox is the trust anchor. |
 | Cost-bomb (server compute abuse) | Not applicable: execution happens in the user's browser. |
@@ -297,11 +361,11 @@ None of these require changes to the v1 runner protocol or problem repo shape.
 
 | Component | Effort |
 |---|---|
-| Scaffolding, Next.js, OpenNext deploy pipeline | ~1 day |
-| Runner subdomain: iframe + Web Worker + Pyodide self-hosting + CSP + postMessage protocol v1 + cross-browser smoke | ~3 days |
-| JS runner branch in the same worker | ~0.5 day |
-| Typed signature system + 7 built-in validators + linked-list/tree/grid serializers (per language) | ~2 days |
-| Problem list page, problem page, Monaco wiring, IDB persistence, autosave | ~1 day |
+| Scaffolding, Next.js static export, Workers Static Assets deploy | ~0.5 day |
+| Runner subdomain: two Web Workers (Python, JS) + Pyodide self-hosting + CSP + frozen network APIs + postMessage protocol v1 + cross-browser smoke | ~3 days |
+| JS runner specifics: `Function`-constructor scope isolation, structured stdout capture | ~0.5 day |
+| Typed signature system + 7 built-in validators (canonical-sort impl) + linked-list/tree/grid serializers (per language, Python-side serialization to JSON) | ~2 days |
+| Problem list page, problem page, CodeMirror 6 wiring (incl. mobile), IDB persistence, autosave, SessionStorage reveal gate, warm-up indicator | ~1.5 days |
 | 20 coding problems (Python + JS solutions, signatures, validators, tests) + 7 system-design prompts | ~3-4 days |
 | CI: pyodide npm validator + GitHub Actions deploy | ~1 day |
 | Polish, accessibility, mobile layout, CSP debugging tail | ~1 day |
@@ -311,6 +375,6 @@ None of these require changes to the v1 runner protocol or problem repo shape.
 
 - Exact `postMessage` protocol schema, version negotiation, and error taxonomy.
 - Final Pyodide version pin and which Python packages preload at boot.
-- Monaco vs CodeMirror 6 final pick (default: Monaco; revisit if Worker size becomes a problem).
+- CodeMirror 6 extension set (Python + JS modes, Vim/Emacs keymaps off by default, line-number gutter, search, theme).
 - Theme and visual design.
 - Whether to ship the optional Playwright nightly job in v1 or punt to v1.1.
