@@ -1,6 +1,6 @@
 name = "code-davidloor-runner"
 compatibility_date = "2024-09-23"
-assets = { directory = "./dist", binding = "ASSETS" }
+assets = { directory = "./dist" }
 
 [[routes]]
 pattern = "runner.code.davidloor.com"

@@ -1,7 +1,7 @@
 name = "code-davidloor-com"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
-assets = { directory = "./out", binding = "ASSETS" }
+assets = { directory = "./out" }
 
 [[routes]]
 pattern = "code.davidloor.com"
