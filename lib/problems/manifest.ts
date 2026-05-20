@@ -810,6 +810,93 @@ export const problems: Problem[] = [
     ]
   },
   {
+    "type": "coding",
+    "meta": {
+      "id": "010-linked-list-cycle",
+      "title": "Linked List Cycle",
+      "difficulty": "easy",
+      "tags": [
+        "linked-list",
+        "two-pointers",
+        "hash-table"
+      ],
+      "topics": [
+        "linked-list",
+        "two-pointers"
+      ],
+      "entry": "hasCycle",
+      "signature": {
+        "params": [
+          {
+            "linked_list": "int"
+          }
+        ],
+        "returns": "bool"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Linked List Cycle\n\nGiven the head of a linked list, determine if the linked list contains a cycle. A cycle exists if some node in the list can be reached again by continuously following the `next` pointer. Return `true` if there is a cycle, or `false` otherwise.\n\nThe classic approach is Floyd's cycle-detection (two-pointer / \"tortoise and hare\") which uses O(1) extra space.\n\n## Example\n\nInput: `head = [3,2,0,-4]` (cycle: tail connects back to index 1) → Output: `true`\nInput: `head = [1,2]` (cycle: tail connects back to index 0) → Output: `true`\nInput: `head = [1]` (no cycle) → Output: `false`\n\n## Constraints\n- The number of nodes is in the range `[0, 10⁴]`.\n- -10⁵ ≤ Node.val ≤ 10⁵\n\n## v1 Limitation\n\nThe v1 test schema cannot express cyclic input; all test cases use acyclic lists where the expected answer is always `false`. v1.1 may extend the schema with a `cycleIndex` per test case to support cycle inputs.\n",
+    "starters": {
+      "python": "def hasCycle(head):\n    # Return True if the linked list contains a cycle, False otherwise.\n    # ListNode is available in scope (injected by the harness).\n    pass\n",
+      "javascript": "function hasCycle(head) {\n  // Return true if the linked list contains a cycle, false otherwise.\n  // ListNode is available in scope (injected by the harness).\n}\n"
+    },
+    "solutions": {
+      "python": "def hasCycle(head):\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next; fast = fast.next.next\n        if slow is fast: return True\n    return False\n",
+      "javascript": "function hasCycle(head) {\n  let slow = head, fast = head;\n  while (fast && fast.next) { slow = slow.next; fast = fast.next.next; if (slow === fast) return true; }\n  return false;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          [
+            3,
+            2,
+            0,
+            -4
+          ]
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          [
+            1,
+            2
+          ]
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          [
+            1
+          ]
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          []
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ],
+        "expected": false
+      }
+    ]
+  },
+  {
     "type": "system_design",
     "meta": {
       "id": "001-design-url-shortener",

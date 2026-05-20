@@ -1,0 +1,11 @@
+title: Linked List Cycle
+difficulty: easy
+tags: [linked-list, two-pointers, hash-table]
+topics: [linked-list, two-pointers]
+entry: hasCycle
+signature:
+  params:
+    - { linked_list: int }
+  returns: bool
+validator: { kind: exact }
+timeLimitMs: 5000
