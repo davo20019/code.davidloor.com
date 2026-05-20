@@ -331,7 +331,7 @@ URL Shortener, Rate Limiter, News Feed, Chat App, Distributed Cache, Web Crawler
 ## UX
 
 ### Coding problem page
-- Split layout: statement (left) / Monaco editor (right) / output panel (bottom).
+- Split layout: statement (left) / CodeMirror 6 editor (right) / output panel (bottom).
 - Language tab (Python | JS). Switching swaps starter code; user code is autosaved per `(problem, language)` in IndexedDB.
 - "Run" sends current code + problem spec to the runner iframe; results stream into the output panel with per-test status, stdout, error messages, runtime. If the Python worker is reloading after a prior timeout, the panel shows "Resetting Python engine…" until the worker reports ready.
 - "Reveal solution" gated on at least one run attempt **and** ≥ 60s elapsed since `sessionStorage[`code-start-<problemId>`]` (set on first load of the problem). Storing the start timestamp in `sessionStorage` survives page refresh within the same tab, so the gate can't be reset by reload. A one-line warning appears before the reveal.
