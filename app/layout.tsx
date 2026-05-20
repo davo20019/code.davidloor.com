@@ -92,7 +92,7 @@ function Masthead() {
             Problems
           </a>
           <a
-            href="https://github.com/davidloor/code.davidloor.com"
+            href="https://github.com/davo20019/code.davidloor.com"
             className="hover:text-lime transition-colors"
             target="_blank"
             rel="noreferrer"
@@ -117,7 +117,7 @@ function Colophon() {
         <span>
           Open source · MIT ·{" "}
           <a
-            href="https://github.com/davidloor/code.davidloor.com"
+            href="https://github.com/davo20019/code.davidloor.com"
             className="hover:text-lime transition-colors"
           >
             fork on GitHub

@@ -4,7 +4,7 @@
 
 **Live:** [code.davidloor.com](https://code.davidloor.com)
 
-[![CI](https://github.com/davidloor/code.davidloor.com/actions/workflows/ci.yml/badge.svg)](https://github.com/davidloor/code.davidloor.com/actions/workflows/ci.yml)
+[![CI](https://github.com/davo20019/code.davidloor.com/actions/workflows/ci.yml/badge.svg)](https://github.com/davo20019/code.davidloor.com/actions/workflows/ci.yml)
 &nbsp;
 [![License: MIT](https://img.shields.io/badge/License-MIT-A8421B.svg)](./LICENSE)
 
