@@ -1,0 +1,6 @@
+[
+  { "input": [["eat","tea","tan","ate","nat","bat"]], "expected": [["eat","tea","ate"],["tan","nat"],["bat"]] },
+  { "input": [[""]], "expected": [[""]] },
+  { "input": [["a"]], "expected": [["a"]] },
+  { "input": [["cab","abc","bca","xyz","zyx"]], "expected": [["cab","abc","bca"],["xyz","zyx"]] }
+]

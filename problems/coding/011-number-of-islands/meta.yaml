@@ -1,0 +1,11 @@
+title: Number of Islands
+difficulty: medium
+tags: [array, depth-first-search, breadth-first-search, union-find, matrix]
+topics: [graph, dfs, matrix]
+entry: numIslands
+signature:
+  params:
+    - { grid: string }
+  returns: int
+validator: { kind: exact }
+timeLimitMs: 5000

@@ -1,0 +1,11 @@
+title: Best Time to Buy and Sell Stock
+difficulty: easy
+tags: [array, greedy, sliding-window]
+topics: [arrays, greedy]
+entry: maxProfit
+signature:
+  params:
+    - { array: int }
+  returns: int
+validator: { kind: exact }
+timeLimitMs: 5000

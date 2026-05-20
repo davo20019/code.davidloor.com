@@ -1,0 +1,11 @@
+title: 3Sum
+difficulty: medium
+tags: [two-pointers, array, sorting]
+topics: [two-pointers]
+entry: threeSum
+signature:
+  params:
+    - { array: int }
+  returns: { array: { array: int } }
+validator: { kind: set_of_sets }
+timeLimitMs: 5000

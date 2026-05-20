@@ -1,0 +1,7 @@
+[
+  { "input": [[3,2,0,-4]], "expected": false },
+  { "input": [[1,2]],      "expected": false },
+  { "input": [[1]],        "expected": false },
+  { "input": [[]],         "expected": false },
+  { "input": [[1,2,3,4,5]], "expected": false }
+]

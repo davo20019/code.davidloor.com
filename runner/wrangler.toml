@@ -1,0 +1,7 @@
+name = "code-davidloor-runner"
+compatibility_date = "2024-09-23"
+assets = { directory = "./dist" }
+
+[[routes]]
+pattern = "runner.code.davidloor.com"
+custom_domain = true

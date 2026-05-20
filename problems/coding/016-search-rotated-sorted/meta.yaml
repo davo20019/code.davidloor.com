@@ -1,0 +1,12 @@
+title: Search in Rotated Sorted Array
+difficulty: medium
+tags: [binary-search, array]
+topics: [binary-search]
+entry: search
+signature:
+  params:
+    - { array: int }
+    - int
+  returns: int
+validator: { kind: exact }
+timeLimitMs: 5000

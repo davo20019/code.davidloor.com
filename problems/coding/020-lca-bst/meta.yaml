@@ -1,0 +1,13 @@
+title: Lowest Common Ancestor of a BST
+difficulty: easy
+tags: [tree, BST, DFS]
+topics: [trees]
+entry: lowestCommonAncestor
+signature:
+  params:
+    - { tree: int }
+    - int
+    - int
+  returns: int
+validator: { kind: exact }
+timeLimitMs: 5000

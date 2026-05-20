@@ -1,0 +1,11 @@
+title: Valid Parentheses
+difficulty: easy
+tags: [stack, string]
+topics: [stack]
+entry: isValid
+signature:
+  params:
+    - string
+  returns: bool
+validator: { kind: exact }
+timeLimitMs: 5000

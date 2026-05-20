@@ -1,0 +1,12 @@
+title: Course Schedule
+difficulty: medium
+tags: [graph, topological-sort, BFS]
+topics: [graphs]
+entry: canFinish
+signature:
+  params:
+    - int
+    - { array: { array: int } }
+  returns: bool
+validator: { kind: exact }
+timeLimitMs: 5000

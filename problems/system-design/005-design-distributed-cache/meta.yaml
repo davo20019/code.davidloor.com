@@ -1,0 +1,3 @@
+title: Design a Distributed Cache
+estMinutes: 45
+tags: [system-design, caching, consistent-hashing, distributed-systems]

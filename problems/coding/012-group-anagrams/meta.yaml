@@ -1,0 +1,11 @@
+title: Group Anagrams
+difficulty: medium
+tags: [hash-map, string, sorting]
+topics: [hash-maps]
+entry: groupAnagrams
+signature:
+  params:
+    - { array: string }
+  returns: { array: { array: string } }
+validator: { kind: set_of_sets }
+timeLimitMs: 5000
