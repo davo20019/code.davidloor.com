@@ -1,0 +1,12 @@
+title: Two Sum
+difficulty: easy
+tags: [array, hash-map]
+topics: [arrays]
+entry: twoSum
+signature:
+  params:
+    - { array: int }
+    - int
+  returns: { array: int }
+validator: { kind: set }
+timeLimitMs: 5000
