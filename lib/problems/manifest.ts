@@ -273,6 +273,99 @@ export const problems: Problem[] = [
     ]
   },
   {
+    "type": "coding",
+    "meta": {
+      "id": "004-best-time-buy-sell",
+      "title": "Best Time to Buy and Sell Stock",
+      "difficulty": "easy",
+      "tags": [
+        "array",
+        "greedy",
+        "sliding-window"
+      ],
+      "topics": [
+        "arrays",
+        "greedy"
+      ],
+      "entry": "maxProfit",
+      "signature": {
+        "params": [
+          {
+            "array": "int"
+          }
+        ],
+        "returns": "int"
+      },
+      "validator": {
+        "kind": "exact"
+      },
+      "timeLimitMs": 5000
+    },
+    "statementMarkdown": "# Best Time to Buy and Sell Stock\n\nYou are given an array `prices` where `prices[i]` is the price of a stock on day `i`. You want to maximize profit by choosing a single day to buy and a later day to sell. Return the maximum profit you can achieve. If no profit is possible, return `0`.\n\n## Example\n\nInput: `prices = [7,1,5,3,6,4]` → Output: `5`\nExplanation: Buy on day 2 (price=1), sell on day 5 (price=6). Profit = 6 - 1 = 5.\n\nInput: `prices = [7,6,4,3,1]` → Output: `0`\nExplanation: Prices only decrease; no transaction gives a profit.\n\n## Constraints\n- 1 ≤ prices.length ≤ 10⁵\n- 0 ≤ prices[i] ≤ 10⁴\n",
+    "starters": {
+      "python": "def maxProfit(prices):\n    # Return the maximum profit from one buy-then-sell transaction.\n    pass\n",
+      "javascript": "function maxProfit(prices) {\n  // Return the maximum profit from one buy-then-sell transaction.\n}\n"
+    },
+    "solutions": {
+      "python": "def maxProfit(prices):\n    best, lo = 0, float('inf')\n    for p in prices:\n        lo = min(lo, p); best = max(best, p - lo)\n    return best\n",
+      "javascript": "function maxProfit(prices) {\n  let best = 0, lo = Infinity;\n  for (const p of prices) { lo = Math.min(lo, p); best = Math.max(best, p - lo); }\n  return best;\n}\n"
+    },
+    "tests": [
+      {
+        "input": [
+          [
+            7,
+            1,
+            5,
+            3,
+            6,
+            4
+          ]
+        ],
+        "expected": 5
+      },
+      {
+        "input": [
+          [
+            7,
+            6,
+            4,
+            3,
+            1
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "input": [
+          [
+            1,
+            2
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "input": [
+          [
+            2,
+            1,
+            4
+          ]
+        ],
+        "expected": 3
+      },
+      {
+        "input": [
+          [
+            1
+          ]
+        ],
+        "expected": 0
+      }
+    ]
+  },
+  {
     "type": "system_design",
     "meta": {
       "id": "001-design-url-shortener",
