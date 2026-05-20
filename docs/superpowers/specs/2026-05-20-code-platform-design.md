@@ -21,11 +21,11 @@ An open-source coding interview prep platform at `code.davidloor.com`. The autho
 ```
                          code.davidloor.com (main app)
                          ┌─────────────────────────────┐
-                         │ Next.js 16 App Router       │
+                         │ Next.js 16 (output:'export')│
                          │ on Cloudflare Workers       │
-                         │ via @opennextjs/cloudflare  │
+                         │ Static Assets               │
                          │  - Problem list / problem   │
-                         │    page / Monaco editor     │
+                         │    page / CodeMirror 6      │
                          │  - Local progress (IDB)     │
                          └──────────────┬──────────────┘
                                         │ postMessage
@@ -54,7 +54,7 @@ The runner subdomain is the security boundary. All user code executes inside an 
 - **Host:** Cloudflare **Workers Static Assets** (the unified Workers + assets model, which is what Pages is converging into). No OpenNext, no SSR layer for v1.
   - Rationale: v1 has no server-side rendering, no database, no auth, no API routes. Static export removes the OpenNext compatibility surface entirely and matches the user-stated "Workers, not Pages" preference via the modern Static Assets binding.
   - Trade-off accepted: no Next.js middleware available, so per-request CSP nonces are not possible without a separate Worker in front. v1 falls back to `script-src 'self' 'unsafe-inline'` for the main app (acceptable: no user-generated HTML; problem Markdown is sanitized via DOMPurify). v1.1 hardening path: a thin CF Worker in front using HTMLRewriter to inject per-request nonces and tighten the CSP.
-  - Verify Worker bundle size against the active Cloudflare plan. Pyodide and CodeMirror assets are served as static assets; nothing user-runtime-related is in a Worker script.
+  - No Worker script bundle to size-budget in v1 (static-only deployment). Static-asset limits apply per-file (well under any Pyodide artifact). If the v1.1 HTMLRewriter Worker is added later, *its* size becomes the new budget.
 - **Editor:** **CodeMirror 6**. ~150-300 KB, modular, excellent touch/mobile support (the platform should be usable from an iPad). Monaco rejected for v1 due to size (~4-5 MB), mobile-input bugs, and harder CSP story (relies on workers loaded via blob in some setups).
 - **UI:** Tailwind + shadcn/ui.
 - **Python runtime:** Pyodide (CPython 3.12 on WebAssembly), bundled as static assets on the runner subdomain.
@@ -125,22 +125,44 @@ form-action 'none';
 
 The runner has no cookies, no third-party scripts, and serves no HTML to humans — only the iframe.
 
-**Defense-in-depth: freeze network APIs in the Web Worker.** CSP and origin isolation prevent off-domain exfiltration but do not prevent same-origin exfiltration into runner-origin platform logs. Before user code executes, the runner Web Worker permanently deletes/freezes its networking surface:
+**Defense-in-depth: freeze network APIs in the Web Worker.** CSP and origin isolation prevent off-domain exfiltration but do not prevent same-origin exfiltration into runner-origin platform logs. Before user code executes, the runner Web Worker permanently disables its networking surface — **on every prototype in the chain, not just on `self`** (since `fetch`, `WebSocket`, etc. live on `WorkerGlobalScope.prototype` / `DedicatedWorkerGlobalScope.prototype` and would otherwise be reachable via `Object.getPrototypeOf(self).fetch.call(self, …)`):
 
 ```js
-// runner-worker.js — runs after Pyodide finishes booting and before any user code
-for (const name of [
+// runner-worker.js — runs after Pyodide finishes booting, before any user code.
+const APIS_TO_DISABLE = [
   "fetch", "XMLHttpRequest", "WebSocket", "EventSource",
   "Worker", "SharedWorker", "BroadcastChannel",
-  "importScripts", "navigator.sendBeacon", "WebTransport",
-]) {
-  // Use Object.defineProperty with writable:false, configurable:false on self
-  // (and on navigator where applicable). Pseudocode here; full impl in plan.
+  "importScripts", "WebTransport",
+];
+
+function killApi(name) {
+  // Walk every prototype in the chain and lock the property if defined.
+  let proto = Object.getPrototypeOf(self);
+  while (proto) {
+    if (Object.prototype.hasOwnProperty.call(proto, name)) {
+      Object.defineProperty(proto, name, {
+        value: undefined, writable: false, configurable: false,
+      });
+    }
+    proto = Object.getPrototypeOf(proto);
+  }
+  // Shadow on the instance too.
+  Object.defineProperty(self, name, {
+    value: undefined, writable: false, configurable: false,
+  });
+}
+APIS_TO_DISABLE.forEach(killApi);
+
+// navigator.sendBeacon lives on Navigator.prototype:
+if (self.navigator && Navigator.prototype.sendBeacon) {
+  Object.defineProperty(Navigator.prototype, "sendBeacon", {
+    value: undefined, writable: false, configurable: false,
+  });
 }
 Object.freeze(self.navigator);
 ```
 
-After this step, neither user code nor a malicious test data structure can initiate any network request. The Cloudflare access log channel is closed by construction, not just by policy.
+After this step, neither user code nor a malicious test data structure can initiate any network request — even via the prototype chain. The Cloudflare access log channel is closed by construction, not just by policy.
 
 ## Execution model
 
@@ -201,11 +223,17 @@ User JS code is wrapped via the `Function` constructor (allowed by the runner CS
 
 ```js
 // Inside js-worker.js, after network APIs are frozen:
-const userFn = new Function("args", `${userCode}\nreturn ${entry}.apply(null, args);`);
+// Use a deliberately unlikely parameter name so user code can declare
+// `args`, `input`, `data`, etc. without colliding with the parameter
+// (a let/const collision is a SyntaxError).
+const userFn = new Function(
+  "__harness_args__",
+  `${userCode}\nreturn ${entry}.apply(null, __harness_args__);`
+);
 const out = userFn(deserializedArgs);
 ```
 
-Harness state lives in block-scoped `const`/`let` inside the worker module and is **never** attached to `self`.
+Harness state lives in block-scoped `const`/`let` inside the worker module and is **never** attached to `self`. The double-underscore parameter name is reserved for the harness; problem definitions and CI lint reject reference solutions that mention the literal token `__harness_args__`.
 
 ### Pyodide proxy lifecycle
 
@@ -343,7 +371,7 @@ URL Shortener, Rate Limiter, News Feed, Chat App, Distributed Cache, Web Crawler
 - README explains: run locally with `npm dev`, contribute a problem by adding a folder.
 - **CI architecture:** GitHub Actions runs `scripts/validate-problem.mjs` using the **`pyodide` npm package running in Node.js** (same WASM build as the browser, per Pyodide's official Node.js usage docs) plus standard Node for JS. The validator imports the same harness modules that the runner bundles, deserializes test inputs identically, and runs the reference solutions. Drift surface vs the browser runtime is small (Pyodide is the same WASM artifact; JS runtime semantics are equivalent for problem-scoped code with no DOM access).
 - Optional follow-up: a nightly Playwright job that re-runs the same problems through the real browser runner end-to-end, catching any divergence. Not required for v1.
-- Deploys to Cloudflare Workers on merges to `main` via GitHub Actions (`opennextjs-cloudflare build && wrangler deploy`).
+- Deploys to Cloudflare Workers Static Assets on merges to `main` via GitHub Actions: `next build` produces `out/`, then `wrangler deploy` with a `wrangler.toml` declaring `assets = { directory = "./out", binding = "ASSETS" }` (and no user-facing worker script in v1).
 
 ## v2 forward path (designed-for, not built)
 
