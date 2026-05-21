@@ -49,25 +49,25 @@ export default function Home() {
   };
 
   return (
-    <main className="max-w-6xl mx-auto px-6 pt-12 pb-24">
+    <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-12 pb-20 sm:pb-24">
       <StructuredData data={siteJsonLd} />
       <section className="grid grid-cols-12 gap-6 items-end">
         <div className="col-span-12 lg:col-span-9 animate-fade-up" style={{ animationDelay: "40ms" }}>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-ink-dim mb-5">
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] sm:tracking-[0.22em] text-ink-dim mb-4 sm:mb-5">
             Vol. I · Interview Practice · 2026
           </p>
           <h1
-            className="font-display font-light text-ink leading-[0.92] tracking-tighter"
+            className="font-display font-light text-ink leading-[0.94] sm:leading-[0.92] tracking-tighter"
             style={{
               fontVariationSettings: '"opsz" 144, "SOFT" 50, "WONK" 1',
-              fontSize: "clamp(3rem, 9vw, 6.5rem)",
+              fontSize: "clamp(2.6rem, 11vw, 6.5rem)",
             }}
           >
             Read the problem.<br />
             <span className="italic" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100, "WONK" 1' }}>
               Write the answer.
             </span>{" "}
-            <span className="text-lime">Run it.</span>
+            <span className="text-lime whitespace-nowrap">Run it.</span>
           </h1>
         </div>
         <div
@@ -81,7 +81,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 grid grid-cols-12 gap-6 items-baseline border-t border-rule pt-10">
+      <section className="mt-14 sm:mt-20 grid grid-cols-12 gap-x-6 gap-y-5 items-baseline border-t border-rule pt-8 sm:pt-10">
         <div className="col-span-12 lg:col-span-3 animate-fade-up" style={{ animationDelay: "240ms" }}>
           <p className="text-[11px] uppercase tracking-[0.22em] text-ink-dim mb-2">In this volume</p>
         </div>
@@ -106,7 +106,7 @@ export default function Home() {
       </section>
 
       <section
-        className="mt-16 grid grid-cols-12 gap-6 items-baseline border-t border-rule pt-10 animate-fade-up"
+        className="mt-12 sm:mt-16 grid grid-cols-12 gap-x-6 gap-y-4 items-baseline border-t border-rule pt-8 sm:pt-10 animate-fade-up"
         style={{ animationDelay: "500ms" }}
       >
         <div className="col-span-12 lg:col-span-3">
@@ -130,17 +130,17 @@ export default function Home() {
       </section>
 
       <div
-        className="mt-14 flex flex-wrap items-center gap-4 animate-fade-up"
+        className="mt-10 sm:mt-14 flex flex-wrap items-center gap-x-5 gap-y-3 animate-fade-up"
         style={{ animationDelay: "580ms" }}
       >
         <Link
           href="/problems/"
-          className="btn-tactile focus-ring inline-flex items-center gap-3 bg-lime text-ground px-7 py-3.5 text-[13px] uppercase tracking-[0.18em] hover:bg-lime-deep transition-colors"
+          className="btn-tactile focus-ring inline-flex items-center gap-3 bg-lime text-ground px-6 sm:px-7 py-3 sm:py-3.5 text-[12px] sm:text-[13px] uppercase tracking-[0.16em] sm:tracking-[0.18em] hover:bg-lime-deep transition-colors"
         >
           Open the problem set
           <span aria-hidden>→</span>
         </Link>
-        <span className="text-[11px] uppercase tracking-[0.16em] text-ink-dim">
+        <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.16em] text-ink-dim">
           MIT licensed · Pyodide 0.27 · Next.js 16
         </span>
       </div>

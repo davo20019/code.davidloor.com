@@ -14,8 +14,8 @@ export default function ProblemsPage() {
   const sys = getSystemDesign();
 
   return (
-    <main className="max-w-5xl mx-auto px-6 pt-12 pb-24">
-      <header className="mb-12 grid grid-cols-12 gap-6 items-baseline">
+    <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 sm:pt-12 pb-20 sm:pb-24">
+      <header className="mb-10 sm:mb-12 grid grid-cols-12 gap-x-6 gap-y-5 items-baseline">
         <div className="col-span-12 lg:col-span-9 animate-fade-up" style={{ animationDelay: "40ms" }}>
           <p className="text-[11px] uppercase tracking-[0.22em] text-ink-dim mb-3">Table of contents</p>
           <h1
@@ -46,24 +46,24 @@ export default function ProblemsPage() {
               <li key={p.meta.id} className="animate-fade-up" style={{ animationDelay: `${260 + i * 14}ms` }}>
                 <Link
                   href={`/problems/${p.meta.id}/`}
-                  className="group focus-ring grid grid-cols-12 gap-4 items-center py-4 hover:bg-elevated transition-colors px-2 -mx-2"
+                  className="group focus-ring grid grid-cols-12 gap-x-3 sm:gap-x-4 items-center py-3.5 sm:py-4 hover:bg-elevated transition-colors px-2 -mx-2"
                 >
-                  <span className="col-span-2 sm:col-span-1 marker-num text-2xl sm:text-3xl text-ink-dim group-hover:text-lime transition-colors">
+                  <span className="col-span-2 sm:col-span-1 marker-num text-[1.65rem] sm:text-3xl text-ink-dim group-hover:text-lime transition-colors">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span
-                    className="col-span-7 sm:col-span-7 font-display text-ink text-lg sm:text-xl group-hover:italic transition-all"
+                    className="col-span-8 sm:col-span-7 font-display text-ink text-[1.0625rem] sm:text-xl leading-snug group-hover:italic transition-all"
                     style={{ fontVariationSettings: '"opsz" 24, "SOFT" 30' }}
                   >
                     {p.meta.title}
                   </span>
-                  <span className="col-span-3 sm:col-span-3 hidden sm:flex flex-wrap gap-2 justify-end text-[10px] uppercase tracking-[0.14em] text-ink-dim">
+                  <span className="hidden sm:flex sm:col-span-3 flex-wrap gap-2 justify-end text-[10px] uppercase tracking-[0.14em] text-ink-dim">
                     {p.meta.tags.slice(0, 2).map((t) => (
                       <span key={t}>{t}</span>
                     ))}
                   </span>
                   <span
-                    className={`col-span-3 sm:col-span-1 inline-flex items-center justify-center w-7 h-7 border ${d.tone} text-[11px] font-semibold ml-auto`}
+                    className={`col-span-2 sm:col-span-1 inline-flex items-center justify-center w-7 h-7 border ${d.tone} text-[11px] font-semibold ml-auto`}
                     title={d.label}
                   >
                     {d.letter}
@@ -89,19 +89,19 @@ export default function ProblemsPage() {
               <li key={p.meta.id} className="animate-fade-up" style={{ animationDelay: `${580 + i * 30}ms` }}>
                 <Link
                   href={`/problems/${p.meta.id}/`}
-                  className="group focus-ring grid grid-cols-12 gap-4 items-center py-4 hover:bg-elevated transition-colors px-2 -mx-2"
+                  className="group focus-ring grid grid-cols-12 gap-x-3 sm:gap-x-4 items-center py-3.5 sm:py-4 hover:bg-elevated transition-colors px-2 -mx-2"
                 >
-                  <span className="col-span-2 sm:col-span-1 marker-num text-2xl sm:text-3xl text-ink-dim group-hover:text-lime transition-colors">
+                  <span className="col-span-2 sm:col-span-1 marker-num text-[1.65rem] sm:text-3xl text-ink-dim group-hover:text-lime transition-colors">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span
-                    className="col-span-7 sm:col-span-9 font-display text-ink text-lg sm:text-xl group-hover:italic transition-all"
+                    className="col-span-7 sm:col-span-9 font-display text-ink text-[1.0625rem] sm:text-xl leading-snug group-hover:italic transition-all"
                     style={{ fontVariationSettings: '"opsz" 24, "SOFT" 30' }}
                   >
                     {p.meta.title}
                   </span>
                   <span
-                    className="col-span-3 sm:col-span-2 text-right font-display italic text-ink-dim text-sm"
+                    className="col-span-3 sm:col-span-2 text-right font-display italic text-ink-dim text-xs sm:text-sm whitespace-nowrap"
                     style={{ fontVariationSettings: '"opsz" 14, "WONK" 1' }}
                   >
                     {p.meta.estMinutes} min
@@ -132,21 +132,21 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="mt-16 scroll-mt-20">
+    <section id={id} className="mt-14 sm:mt-16 scroll-mt-20">
       <div
-        className="flex items-baseline justify-between mb-4 animate-fade-up"
+        className="flex items-baseline justify-between gap-3 mb-4 animate-fade-up"
         style={{ animationDelay: `${delayMs}ms` }}
       >
-        <h2 className="flex items-baseline gap-4">
-          <span className="marker-num text-lime text-4xl">{number}</span>
+        <h2 className="flex items-baseline gap-3 sm:gap-4 min-w-0">
+          <span className="marker-num text-lime text-[2.25rem] sm:text-4xl">{number}</span>
           <span
-            className="font-display text-ink text-2xl"
+            className="font-display text-ink text-xl sm:text-2xl truncate"
             style={{ fontVariationSettings: '"opsz" 24, "SOFT" 30' }}
           >
             {title}
           </span>
         </h2>
-        <span className="text-[11px] uppercase tracking-[0.18em] text-ink-dim">{subtitle}</span>
+        <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.18em] text-ink-dim text-right shrink-0">{subtitle}</span>
       </div>
       {children}
     </section>

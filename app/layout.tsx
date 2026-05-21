@@ -89,18 +89,18 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 function Masthead() {
   return (
     <header className="border-b border-rule">
-      <div className="max-w-6xl mx-auto px-6 py-5 flex items-baseline justify-between gap-6">
-        <a href="/" className="group inline-flex items-baseline gap-3">
-          <span className="font-display text-[1.35rem] leading-none tracking-tight text-ink">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-5 flex items-baseline justify-between gap-3 sm:gap-6">
+        <a href="/" className="group inline-flex items-baseline gap-3 min-w-0">
+          <span className="font-display text-[1.05rem] sm:text-[1.35rem] leading-none tracking-tight text-ink whitespace-nowrap">
             <span className="italic">code</span>
             <span className="text-ink-dim">.</span>davidloor
             <span className="text-ink-dim">.</span>com
           </span>
-          <span className="hidden sm:inline text-[10px] uppercase tracking-[0.18em] text-ink-dim">
+          <span className="hidden md:inline text-[10px] uppercase tracking-[0.18em] text-ink-dim">
             A studio of problems
           </span>
         </a>
-        <nav className="text-[12px] uppercase tracking-[0.16em] text-ink-dim flex gap-5">
+        <nav className="text-[11px] sm:text-[12px] uppercase tracking-[0.1em] sm:tracking-[0.16em] text-ink-dim flex gap-3 sm:gap-5">
           <a href="/problems/" className="hover:text-lime transition-colors">
             Problems
           </a>
@@ -124,7 +124,7 @@ function Masthead() {
 function Colophon() {
   return (
     <footer className="mt-24 border-t border-rule">
-      <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row gap-4 sm:items-baseline sm:justify-between text-[11px] uppercase tracking-[0.16em] text-ink-dim">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-7 sm:py-8 flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-baseline sm:justify-between text-[10px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.16em] text-ink-dim">
         <span>
           Set in{" "}
           <span className="font-display italic normal-case tracking-normal text-ink">Fraunces</span>,

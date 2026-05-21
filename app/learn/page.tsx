@@ -7,8 +7,8 @@ export default function LearnPage() {
   const guides = getLearnGuides();
 
   return (
-    <main className="max-w-5xl mx-auto px-6 pt-12 pb-24">
-      <header className="mb-12 grid grid-cols-12 gap-6 items-baseline">
+    <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 sm:pt-12 pb-20 sm:pb-24">
+      <header className="mb-10 sm:mb-12 grid grid-cols-12 gap-x-6 gap-y-5 items-baseline">
         <div className="col-span-12 lg:col-span-9 animate-fade-up" style={{ animationDelay: "40ms" }}>
           <p className="text-[11px] uppercase tracking-[0.22em] text-ink-dim mb-3">Field guides</p>
           <h1
@@ -36,27 +36,27 @@ export default function LearnPage() {
           <li key={g.meta.id} className="animate-fade-up" style={{ animationDelay: `${200 + i * 50}ms` }}>
             <Link
               href={`/learn/${g.meta.id}/`}
-              className="group focus-ring grid grid-cols-12 gap-4 items-baseline py-6 hover:bg-elevated transition-colors px-2 -mx-2"
+              className="group focus-ring grid grid-cols-12 gap-x-3 sm:gap-x-4 gap-y-2 items-baseline py-5 sm:py-6 hover:bg-elevated transition-colors px-2 -mx-2"
             >
-              <span className="col-span-2 sm:col-span-1 marker-num text-3xl sm:text-4xl text-lime leading-none">
+              <span className="col-span-2 sm:col-span-1 marker-num text-[2rem] sm:text-4xl text-lime leading-none">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div className="col-span-10 sm:col-span-9 min-w-0">
                 <h2
-                  className="font-display text-ink text-xl sm:text-2xl mb-1 group-hover:italic transition-all"
+                  className="font-display text-ink text-[1.2rem] sm:text-2xl leading-snug mb-1 group-hover:italic transition-all"
                   style={{ fontVariationSettings: '"opsz" 24, "SOFT" 30' }}
                 >
                   {g.meta.title}
                 </h2>
                 <p className="text-[0.875rem] leading-relaxed text-ink-soft">{g.meta.blurb}</p>
-                <div className="mt-2 flex flex-wrap gap-3 text-[10px] uppercase tracking-[0.16em] text-ink-dim">
+                <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[10px] uppercase tracking-[0.16em] text-ink-dim">
                   {g.meta.topics.map((t) => (
                     <span key={t}>· {t}</span>
                   ))}
                 </div>
               </div>
               <span
-                className="col-span-12 sm:col-span-2 text-right font-display italic text-ink-dim text-sm shrink-0"
+                className="col-start-3 sm:col-start-auto col-span-10 sm:col-span-2 text-left sm:text-right font-display italic text-ink-dim text-xs sm:text-sm shrink-0 whitespace-nowrap"
                 style={{ fontVariationSettings: '"opsz" 14, "WONK" 1' }}
               >
                 {g.meta.estMinutes} min
@@ -66,7 +66,7 @@ export default function LearnPage() {
         ))}
       </ol>
 
-      <aside className="mt-16 grid grid-cols-12 gap-6 items-baseline animate-fade-up" style={{ animationDelay: "500ms" }}>
+      <aside className="mt-12 sm:mt-16 grid grid-cols-12 gap-x-6 gap-y-4 items-baseline animate-fade-up" style={{ animationDelay: "500ms" }}>
         <div className="col-span-12 lg:col-span-3">
           <p className="text-[11px] uppercase tracking-[0.22em] text-ink-dim">A note on use</p>
         </div>

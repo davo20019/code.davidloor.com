@@ -152,37 +152,41 @@ export function CodingProblemPage({ problem }: { problem: CodingProblem }) {
         {/* RIGHT — workspace */}
         <section className="lg:col-span-7 min-w-0 animate-fade-up" style={{ animationDelay: "180ms" }}>
           <div className="border border-rule bg-elevated">
-            {/* control strip */}
-            <div className="flex items-center border-b border-rule">
-              <LangTab active={lang === "python"} onClick={() => setLang("python")} label="Python" />
-              <LangTab
-                active={lang === "javascript"}
-                onClick={() => setLang("javascript")}
-                label="JavaScript"
-              />
-              <div className="flex-1" />
-              <button
-                onClick={onReset}
-                className="btn-tactile focus-ring px-3 py-3 text-[11px] uppercase tracking-[0.18em] text-ink-dim hover:text-lime border-l border-rule"
-              >
-                Reset
-              </button>
-              <button
-                onClick={onRun}
-                disabled={!runner.ready || running}
-                aria-busy={running}
-                className="btn-tactile focus-ring inline-flex items-center gap-2 bg-lime text-ground px-5 py-3 text-[12px] uppercase tracking-[0.2em] disabled:opacity-50 hover:bg-lime-deep transition-colors border-l border-lime"
-              >
-                {running ? (
-                  <>
-                    <Spinner /> Running
-                  </>
-                ) : (
-                  <>
-                    <PlayMark /> Run
-                  </>
-                )}
-              </button>
+            {/* control strip — two rows on mobile, single row from sm */}
+            <div className="flex flex-wrap items-stretch border-b border-rule">
+              <div className="flex items-stretch order-1 w-full sm:w-auto border-b sm:border-b-0 border-rule">
+                <LangTab active={lang === "python"} onClick={() => setLang("python")} label="Python" />
+                <LangTab
+                  active={lang === "javascript"}
+                  onClick={() => setLang("javascript")}
+                  label="JavaScript"
+                />
+              </div>
+              <div className="hidden sm:block flex-1 order-2" aria-hidden />
+              <div className="flex items-stretch order-3 w-full sm:w-auto ml-auto">
+                <button
+                  onClick={onReset}
+                  className="btn-tactile focus-ring px-3 py-3 text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.18em] text-ink-dim hover:text-lime sm:border-l border-rule"
+                >
+                  Reset
+                </button>
+                <button
+                  onClick={onRun}
+                  disabled={!runner.ready || running}
+                  aria-busy={running}
+                  className="btn-tactile focus-ring inline-flex flex-1 sm:flex-none items-center justify-center gap-2 bg-lime text-ground px-5 py-3 text-[12px] uppercase tracking-[0.18em] sm:tracking-[0.2em] disabled:opacity-50 hover:bg-lime-deep transition-colors border-l border-lime"
+                >
+                  {running ? (
+                    <>
+                      <Spinner /> Running
+                    </>
+                  ) : (
+                    <>
+                      <PlayMark /> Run
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
             {/* editor */}

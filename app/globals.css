@@ -78,13 +78,20 @@ body {
 .editorial p:first-of-type::first-letter {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: 3.25rem;
+  font-size: 2.75rem;
   line-height: 0.85;
   float: left;
-  margin-right: 0.5rem;
-  margin-top: 0.25rem;
+  margin-right: 0.4rem;
+  margin-top: 0.2rem;
   color: #C8F049;
   font-variation-settings: "opsz" 144, "WONK" 1;
+}
+@media (min-width: 640px) {
+  .editorial p:first-of-type::first-letter {
+    font-size: 3.25rem;
+    margin-right: 0.5rem;
+    margin-top: 0.25rem;
+  }
 }
 .editorial code {
   font-family: var(--font-mono);

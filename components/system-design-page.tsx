@@ -61,30 +61,32 @@ export function SystemDesignPage({ problem }: { problem: SystemDesignProblem }) 
       </nav>
 
       <header
-        className="grid grid-cols-12 gap-6 items-end pb-6 border-b border-rule animate-fade-up"
+        className="grid grid-cols-12 gap-x-6 gap-y-5 items-end pb-6 border-b border-rule animate-fade-up"
         style={{ animationDelay: "60ms" }}
       >
         <div className="col-span-12 sm:col-span-8">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-ink-dim mb-3">
+          <p className="text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.22em] text-ink-dim mb-3">
             Open prompt · {problem.meta.estMinutes} min recommended
           </p>
           <h1
-            className="font-display text-ink leading-[1.02] tracking-tighter text-[clamp(2.25rem,5vw,3.5rem)]"
+            className="font-display text-ink leading-[1.02] tracking-tighter text-[clamp(2rem,7vw,3.5rem)]"
             style={{ fontVariationSettings: '"opsz" 144, "SOFT" 30, "WONK" 1' }}
           >
             {problem.meta.title}
           </h1>
         </div>
         <div className="col-span-12 sm:col-span-4 sm:text-right">
-          <div className="font-mono tabular-nums text-3xl text-ink leading-none">
-            {String(mins).padStart(2, "0")}
-            <span className="text-ink-dim">:</span>
-            {String(secs).padStart(2, "0")}
+          <div className="flex sm:block items-baseline justify-between gap-4">
+            <div className="font-mono tabular-nums text-[2.5rem] sm:text-3xl text-ink leading-none">
+              {String(mins).padStart(2, "0")}
+              <span className="text-ink-dim">:</span>
+              {String(secs).padStart(2, "0")}
+            </div>
+            <p className="sm:mt-1 text-[10px] uppercase tracking-[0.18em] sm:tracking-[0.2em] text-ink-dim text-right">
+              {overtime ? "Over recommended time" : `Target ${problem.meta.estMinutes}:00`}
+            </p>
           </div>
-          <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-ink-dim">
-            {overtime ? "Over the recommended time" : `Target ${problem.meta.estMinutes}:00`}
-          </p>
-          <div className="mt-2 h-[3px] bg-rule-soft overflow-hidden">
+          <div className="mt-3 sm:mt-2 h-[3px] bg-rule-soft overflow-hidden">
             <div
               className={`h-full ${overtime ? "bg-magenta" : "bg-lime"} transition-all duration-700`}
               style={{ width: `${pct}%` }}
